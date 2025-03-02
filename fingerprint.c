@@ -31,8 +31,8 @@ int main(int argc, char *argv[]) {
     FILE *pas_fd = fopen(argv[1], "r");
     FILE *out_fd = fopen(argv[2], "w");
 
-    const int addr1[6] = {0, 17, 0, 0, 0, 0}; // wlan0 target address 11 base 16 = 17 base 10
-    int addr2[6] = {0, 51, 0, 0, 0, 0}; //dragontime address 33 base 16 = 51 base 10
+    const u8 addr1[6] = {0, 17, 0, 0, 0, 0}; // wlan0 target address 11 base 16 = 17 base 10
+    u8 addr2[6] = {0, 51, 0, 0, 0, 0}; //dragontime address 33 base 16 = 51 base 10
 
     struct dh_group *my_dh_group = calloc(1, sizeof(struct dh_group));
     my_dh_group->prime = prime24;
@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
 
             for (int j = 0; j < address_num; j++) {
                 addr2[5] = j;
-                const int iters = sae_derive_pwe_ffc(my_sae, addr1, addr2, line, os_strlen(line));
+                const int iters = sae_derive_pwe_ffc(my_sae, addr1, addr2, (u8 *) line, os_strlen(line));
                 fprintf(out_fd, " %u", iters);
                 if (j < address_num - 1) fprintf(out_fd, ",");
             }
