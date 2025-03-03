@@ -11,8 +11,6 @@
   <component name="CMakeWorkspace" PROJECT_DIR="$PROJECT_DIR$" />
   <component name="CidrRootsConfiguration">
     <excludeRoots>
-      <file path="$PROJECT_DIR$/dragondrain-and-time" />
-      <file path="$PROJECT_DIR$/hostap-wpa3" />
       <file path="$PROJECT_DIR$/venv" />
     </excludeRoots>
   </component>
