@@ -20,7 +20,7 @@ if __name__ == "__main__":
     if len(sys.argv) < 3:
         exit(1)
     if len(sys.argv) == 4:
-        k = sys.argv[3]
+        k = int(sys.argv[3])
 
     with open(sys.argv[2], "r") as out:
         passwords, tree = create_tree(out)
