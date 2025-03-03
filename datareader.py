@@ -26,7 +26,7 @@ def iterations(df, addrs=20):
     """retuns a DataFrame list of iterations for each address, assuming there are addresses with 1,2,3 iterations"""
     q = pd.DataFrame(
         [
-            (j, df[1][df[0] == j].quantile(0.15), df[1][df[0] == j].quantile(0.50))
+            (j, df[1][df[0] == j].quantile(0.15), df[1][df[0] == j].quantile(0.35))
             for j in range(addrs)
         ]
     )
