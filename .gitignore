@@ -1,7 +1,8 @@
 cmake-build-debug
-venv
+.venv
 dragondrain-and-time
 hostap-wpa3
 fingerprint-dir
 hostapd
 fingerprint
+dragontime
