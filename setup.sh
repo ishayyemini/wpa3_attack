@@ -42,3 +42,12 @@ sed -i 's/} __packed;/};/' dragondrain-and-time/src/aircrack-osdep/radiotap/radi
 (cd dragondrain-and-time && autoreconf -i)
 (cd dragondrain-and-time && ./configure)
 (cd dragondrain-and-time && make)
+ln -s dragondrain-and-time/src/dragontime dragontime
+
+# Setup mocked wlan devices
+sudo modprobe -r mac80211_hwsim
+sudo modprobe mac80211_hwsim radios=3
+sudo systemctl stop NetworkManager.service
+sudo macchanger --mac=00:11:00:00:00:00 wlan0
+sudo macchanger --mac=00:22:00:00:00:00 wlan1
+sudo macchanger --mac=00:33:00:00:00:00 wlan2
