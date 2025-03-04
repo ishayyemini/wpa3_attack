@@ -16,7 +16,7 @@ cp changes/dh_groups.c hostap-wpa3/src/crypto/dh_groups.c
 cp changes/dragontime.c dragondrain-and-time/src/dragontime.c
 
 if [ -d "fingerprint-dir" ]; then
-  rm -r fingerprint-dir
+  rm -rf fingerprint-dir
 fi
 cp -r hostap-wpa3 fingerprint-dir
 
