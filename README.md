@@ -1,29 +1,43 @@
+## Admin
+
+Please ```cd``` into the admin folder.
+
 Before starting, run:
 ```
-sudo sh setup.sh
+sudo sh setup_admin.sh
 ```
 
-Choose your password and put it inside hostapd_wpa3.conf. 
+After the initial setup, you usually don't need to run the setup again.
 
-Now, to start the AP, run:
+When you want to start the AP, run:
+```
+sudo sh run_admin.sh wlan0
+```
+You can replace "wlan0" with the Wi-Fi adapter of your choice. 
 
-```
-sudo ./hostapd hostapd_wpa3.conf -dd -K
-```
 
-And to start taking measurements, run:
-```
-sudo ./dragontime -d wlan2 -a 00:11:00:00:00:00 -o measurements/PASSWORD.txt
-```
-Replace "PASSWORD" with your chosen filename. 
+## Player
 
+Please ```cd``` into the user folder.
+
+Before starting, run:
+```
+sudo sh setup_user.sh {AP_MAC_VALUE} {WLAN_ADAPTER}  
+```
+You need to replace ```{AP_MAC_VALUE}``` with the AP's MAC, and ```{WLAN_ADAPTER}``` with the relevant Wi-Fi adapter (usually wlan0).
+
+To start taking measurements, run:
+```
+sudo ./dragontime -d $(<DEVICE) -a $(<MAC_AP) -o measurements/PASSWORD.txt
+```
+You can replace "PASSWORD" with your chosen filename.
 After getting 50-100 measurements, stop dragontime with CTRL+C.
 
 To generate fingerprints for passwords, run:
 ```
-./fingerprint passwords.txt out.csv
+./fingerprint ../passwords.txt out.csv
 ```
-When passwords.txt is a file containing passwords, each in their own line, and the result will be saved to out.csv. 
+The fingerprints will be saved to out.csv. 
 
 After getting measurements and fingerprints, run:
 ```
