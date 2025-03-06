@@ -1,3 +1,5 @@
+DEVICE="${1:-wlan0}"
+
 # Clones repositories
 if [ ! -d "hostap-wpa3" ]; then
   git clone https://github.com/vanhoefm/hostap-wpa3.git
@@ -14,3 +16,9 @@ cp hostap-wpa3/hostapd/defconfig hostap-wpa3/hostapd/.config
 sed -i 's/#CONFIG_DRIVER_WIRED=y/CONFIG_DRIVER_WIRED=y/' hostap-wpa3/hostapd/.config
 (cd hostap-wpa3/hostapd && make -j 2)
 cp hostap-wpa3/hostapd/hostapd hostapd
+
+# Randomize password
+python randomize_password.py hostapd_wpa3.conf "$DEVICE" ../passwords.txt
+
+# Run hostapd
+sudo ./hostapd hostapd_wpa3.conf -dd -K
