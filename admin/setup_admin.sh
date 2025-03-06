@@ -1,4 +1,9 @@
+#!/bin/sh
+
 DEVICE="${1:-wlan0}"
+CHANGES_DIR="../changes"
+CONFIG_FILE="hostapd_wpa3.conf"
+PASSWORDS_FILE="../passwords.txt"
 
 # Clones repositories
 if [ ! -d "hostap-wpa3" ]; then
@@ -7,18 +12,18 @@ if [ ! -d "hostap-wpa3" ]; then
 fi
 
 # Replaces needed files
-cp ../changes/dragonfly.c hostap-wpa3/src/common/dragonfly.c
-cp ../changes/sae.c hostap-wpa3/src/common/sae.c
-cp ../changes/dh_groups.c hostap-wpa3/src/crypto/dh_groups.c
+cp $CHANGES_DIR/dragonfly.c hostap-wpa3/src/common/dragonfly.c
+cp $CHANGES_DIR/sae.c hostap-wpa3/src/common/sae.c
+cp $CHANGES_DIR/dh_groups.c hostap-wpa3/src/crypto/dh_groups.c
 
-# Compile hostapd
+# Compiles hostapd
 cp hostap-wpa3/hostapd/defconfig hostap-wpa3/hostapd/.config
 sed -i 's/#CONFIG_DRIVER_WIRED=y/CONFIG_DRIVER_WIRED=y/' hostap-wpa3/hostapd/.config
 (cd hostap-wpa3/hostapd && make -j 2)
 cp hostap-wpa3/hostapd/hostapd hostapd
 
-# Randomize password
-python randomize_password.py hostapd_wpa3.conf "$DEVICE" ../passwords.txt
+# Randomizes password
+python randomize_password.py "$CONFIG_FILE" "$DEVICE" "$PASSWORDS_FILE"
 
-# Run hostapd
-sudo ./hostapd hostapd_wpa3.conf -dd -K
+# Runs hostapd
+sudo ./hostapd "$CONFIG_FILE" -dd -K
