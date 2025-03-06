@@ -1,8 +1,10 @@
 cmake-build-debug
 .venv
-dragondrain-and-time
-hostap-wpa3
-fingerprint-dir
-hostapd
-fingerprint
-dragontime
+
+admin/hostap-wpa3
+admin/hostapd
+
+user/dragondrain-and-time
+user/hostap-wpa3
+user/fingerprint
+user/dragontime

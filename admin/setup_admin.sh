@@ -1,9 +1,8 @@
 # Clones repositories
-if [ ! -d "../hostap-wpa3" ]; then
-  (cd .. && git clone https://github.com/vanhoefm/hostap-wpa3.git)
-  rm -rf ../hostap-wpa3/.git
+if [ ! -d "hostap-wpa3" ]; then
+  git clone https://github.com/vanhoefm/hostap-wpa3.git
+  rm -rf hostap-wpa3/.git
 fi
-cp -r ../hostap-wpa3 hostap-wap3
 
 # Replaces needed files
 cp ../changes/dragonfly.c hostap-wpa3/src/common/dragonfly.c
