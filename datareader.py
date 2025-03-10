@@ -13,7 +13,7 @@ def extract_data(path):
 
     data = [str.split(line, " ") for line in data]
     data = [(int(line[1][:-1], 16), int(line[2][:-1], 10)) for line in data]
-    return pd.DataFrame(data)
+    return pd.DataFrame(data, columns=["STA", "Time"])
 
 
 def qplot(df, addrs=20):
@@ -26,27 +26,30 @@ def qplot(df, addrs=20):
 
 
 def min_iterations(df, addrs=20):
-    """retuns a DataFrame list of minimum iterations for each address using Crosby's box test. this is a lower bound on the true number"""
+    """retuns a DataFrame list of minimum iterations preformed for each address using Crosby's box test. this is a lower bound on the true number"""
     addr_quantiles = pd.DataFrame(
         [
-            (j, df[1][df[0] == j].quantile(0.15), df[1][df[0] == j].quantile(0.35))
+            (j, df["Time"][df["STA"] == j].quantile(0.15), df["Time"][df["STA"] == j].quantile(0.35))
             for j in range(addrs)
         ]
+        , columns=["STA", "Low Quantile", "High Quantile"]
     )
 
     # adding a new column for the lower bound
-    addr_quantiles[3] = 0
+    addr_quantiles["min_iters"] = 0
 
     # addr_quantiles collums: address, low quantile, high quantile, min_iterations
 
     i = 1
-    while not addr_quantiles[3].all() and i < 256:
-        idmin = addr_quantiles[1][
-            addr_quantiles[3] == 0
+    while not addr_quantiles["min_iters"].all() and i < 256:
+        idmin = addr_quantiles["Low Quantile"][
+            addr_quantiles["min_iters"] == 0
         ].idxmin()  # get the index with the smallest quantile to not be selected
-        addr_quantiles.loc[np.logical_and(addr_quantiles[3] == 0, addr_quantiles[1] <= addr_quantiles[2][idmin]), 3] = (
-            i  # assign min iterations to all intersecting quantiles
-        )
+
+        # get the indices of addresses that are in the range of our box
+        rows_in_box = np.logical_and(addr_quantiles["min_iters"] == 0, addr_quantiles["Low Quantile"] <= addr_quantiles["High Quantile"][idmin])
+        addr_quantiles.loc[rows_in_box, "min_iters"] =  i  # assign min iterations to all intersecting quantiles
+        
         i += 1
     return addr_quantiles
 
@@ -72,25 +75,31 @@ def iterations(df, addrs=20):
     addr_quantiles = min_iterations(df)
 
     qsums = [
-        ((addr_quantiles[3] == j).sum(), addr_quantiles[1][addr_quantiles[3] == j].sum(), addr_quantiles[2][addr_quantiles[3] == j].sum())
+        ((addr_quantiles["min_iters"] == j).sum(), addr_quantiles["Low Quantile"][addr_quantiles["min_iters"] == j].sum(), addr_quantiles["High Quantile"][addr_quantiles["min_iters"] == j].sum())
         for j in (1, 2, 3)
     ]
-    print(qsums)
 
+    #estimated time for 1 iteration
     itrtime = estimate_iter_time(qsums)
     
-    maximal_min_iter = addr_quantiles[3].max()
+    maximal_min_iter = addr_quantiles["min_iters"].max()
 
-    floor1 = (qsums[0][1] + qsums[0][2]) / (
-        2 * qsums[0][0]
-    )  # average of average quantile of 1 iteration addresses
-    addr_quantiles[4] = 0
+    # average time of 1 iteration execution within the quantile range
+    time_1 = (qsums[0][1] + qsums[0][2]) / (2 * qsums[0][0])
+
+    # A new column for estimated iteration count
+    addr_quantiles["est_iters"] = 0
+
     for i in range(4, maximal_min_iter + 1):
-        floor = (addr_quantiles[1][addr_quantiles[3] == i].sum() + addr_quantiles[2][addr_quantiles[3] == i].sum()) / (
-            2 * (addr_quantiles[3] == i).sum()
-        )  # average of average quantile of group i
-        addr_quantiles.loc[addr_quantiles[3] == i, 4] = 1 + round(
-            (floor - floor1) / itrtime
-        )  # number of iterations estimate
+        sum_low_quantile = addr_quantiles["Low Quantile"][addr_quantiles["min_iters"] == i].sum()
+        sum_high_quantile = addr_quantiles["High Quantile"][addr_quantiles["min_iters"] == i].sum()
+        samples_amount = (addr_quantiles["min_iters"] == i).sum()
 
-    return addr_quantiles[3].clip(lower=addr_quantiles[4])  # pairwise max
+        #  average time of i iterations execution within the quantile range
+        time_i = (sum_low_quantile + sum_high_quantile) / (2 * samples_amount) 
+
+        # number of iterations estimate
+        # adding 1 because (time_i - time_1) is the time of i-1 iterations
+        addr_quantiles.loc[addr_quantiles["min_iters"] == i, "est_iters"] = 1 + round((time_i - time_1) / itrtime)  
+
+    return addr_quantiles["min_iters"].clip(lower=addr_quantiles["est_iters"])  # pairwise max
