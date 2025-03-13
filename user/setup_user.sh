@@ -11,7 +11,7 @@ fi
 
 # Ensures requirements are installed
 sudo apt-get update
-sudo apt-get install -y autoconf automake libtool shtool libssl-dev pkg-config libnl-3-dev libnl-genl-3-dev
+sudo apt-get install -y autoconf automake libtool shtool libssl-dev pkg-config libnl-3-dev libnl-genl-3-dev --fix-missing
 
 # Clones repositories
 if [ ! -d "dragondrain-and-time" ]; then
