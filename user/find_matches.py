@@ -25,7 +25,7 @@ if __name__ == "__main__":
     with open(sys.argv[2], "r") as out:
         passwords, tree = create_tree(out)
 
-    fingerprint = dr.iterations(dr.data(sys.argv[1])).to_list()
+    fingerprint = dr.iterations(dr.extract_data(sys.argv[1]), version=3).to_list()
     print("Simulated fingerprint: " + ", ".join([str(item) for item in fingerprint]))
     print()
 
