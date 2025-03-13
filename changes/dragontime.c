@@ -915,11 +915,8 @@ int main(int argc, char * argv[])
 	state->curraddr = 0;
 	state->debug_level = 1;
 	state->group = 24;
-    // WPA3_ATTACK
-	state->delay = 50;
-	state->timeout = 125;
-	//	state->delay = 250;
-	//	state->timeout = 750;
+	state->delay = 250;
+	state->timeout = 750;
 	state->num_addresses = 20;
 
 	while ((ch = getopt(argc, argv, "d:hc:v:a:g:r:i:t:o:")) != -1)

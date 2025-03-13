@@ -4,7 +4,7 @@ CHANGES_DIR="../changes"
 
 # Ensures requirements are installed
 sudo apt-get update
-sudo apt-get install -y autoconf automake libtool shtool libssl-dev pkg-config
+sudo apt-get install -y autoconf automake libtool shtool libssl-dev pkg-config --fix-missing
 
 # Clones repositories
 if [ ! -d "hostap-wpa3" ]; then
@@ -22,3 +22,6 @@ cp hostap-wpa3/hostapd/defconfig hostap-wpa3/hostapd/.config
 sed -i 's/#CONFIG_DRIVER_WIRED=y/CONFIG_DRIVER_WIRED=y/' hostap-wpa3/hostapd/.config
 (cd hostap-wpa3/hostapd && make -j 2)
 cp hostap-wpa3/hostapd/hostapd hostapd
+
+# Stops network manager
+sudo systemctl stop NetworkManager.service
