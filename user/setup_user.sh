@@ -11,7 +11,7 @@ fi
 
 # Ensures requirements are installed
 sudo apt-get update
-sudo apt-get install -y autoconf automake libtool shtool libssl-dev pkg-config
+sudo apt-get install -y autoconf automake libtool shtool libssl-dev pkg-config libnl-3-dev libnl-genl-3-dev
 
 # Clones repositories
 if [ ! -d "dragondrain-and-time" ]; then
@@ -53,7 +53,10 @@ sed -i 's/} __packed;/};/' dragondrain-and-time/src/aircrack-osdep/radiotap/radi
 (cd dragondrain-and-time && autoreconf -i)
 (cd dragondrain-and-time && ./configure)
 (cd dragondrain-and-time && make)
-if [ -f "dragontime" ]; then
+if [ -e "dragontime" ]; then
   rm -f dragontime
 fi
 ln -s dragondrain-and-time/src/dragontime dragontime
+
+# Stops network manager
+sudo systemctl stop NetworkManager.service
