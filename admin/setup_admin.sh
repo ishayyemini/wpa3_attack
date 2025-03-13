@@ -3,8 +3,8 @@
 CHANGES_DIR="../changes"
 
 # Ensures requirements are installed
-apt-get update
-apt-get install -y autoconf automake libtool shtool libssl-dev pkg-config
+sudo apt-get update
+sudo apt-get install -y autoconf automake libtool shtool libssl-dev pkg-config --fix-missing
 
 # Clones repositories
 if [ ! -d "hostap-wpa3" ]; then
