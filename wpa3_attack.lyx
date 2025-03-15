@@ -1,0 +1,533 @@
+#LyX 2.4 created this file. For more info see https://www.lyx.org/
+\lyxformat 620
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass acmart
+\begin_preamble
+\settopmatter{authorsperrow=5}
+\end_preamble
+\options sigconf,nonacm
+\use_default_options false
+\maintain_unincluded_children no
+\language english
+\language_package default
+\inputencoding auto-legacy
+\fontencoding auto
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_roman_osf false
+\font_sans_osf false
+\font_typewriter_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\float_placement class
+\float_alignment class
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine natbib
+\cite_engine_type authoryear
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 0
+\use_formatted_ref 0
+\use_minted 0
+\use_lineno 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tablestyle default
+\tracking_changes false
+\output_changes false
+\change_bars false
+\postpone_fragile_content false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\docbook_table_output 0
+\docbook_mathml_prefix 1
+\end_header
+
+\begin_body
+
+\begin_layout Title
+WPA3-Attack
+\end_layout
+
+\begin_layout Author
+Ariel Berant
+\end_layout
+
+\begin_layout Affiliation
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+country{}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Author
+Asaf Malachi
+\end_layout
+
+\begin_layout Affiliation
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+country{}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Author
+Tal Orlansky
+\end_layout
+
+\begin_layout Affiliation
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+country{}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Author
+Shmuel Segal
+\end_layout
+
+\begin_layout Affiliation
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+country{}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Author
+Ishay Yemini
+\end_layout
+
+\begin_layout Affiliation
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+country{}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Abstract
+Lorem ipsum odor amet,
+ consectetuer adipiscing elit.
+ Magnis turpis non consectetur molestie auctor.
+ Litora dui vel integer vivamus sapien porttitor morbi.
+ Id quam interdum efficitur vitae lectus porttitor mollis viverra condimentum.
+ Risus primis rhoncus scelerisque dapibus vitae parturient sagittis torquent varius.
+ Scelerisque pellentesque dignissim facilisi tincidunt cras torquent tristique eros.
+ Arcu metus fames fames viverra praesent iaculis varius?
+ Cursus suscipit inceptos luctus sociosqu senectus netus ante dictum.
+ 
+\end_layout
+
+\begin_layout Abstract
+Lorem ipsum odor amet,
+ consectetuer adipiscing elit.
+ Magnis turpis non consectetur molestie auctor.
+ Litora dui vel integer vivamus sapien porttitor morbi.
+ Id quam interdum efficitur vitae lectus porttitor mollis viverra condimentum.
+ Risus primis rhoncus scelerisque dapibus vitae parturient sagittis torquent varius.
+ Scelerisque pellentesque dignissim facilisi tincidunt cras torquent tristique eros.
+ Arcu metus fames fames viverra praesent iaculis varius?
+ Cursus suscipit inceptos luctus sociosqu senectus netus ante dictum.
+ 
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+Lorem ipsum odor amet,
+ consectetuer adipiscing elit.
+ Magnis turpis non consectetur molestie auctor.
+ Litora dui vel integer vivamus sapien porttitor morbi.
+ Id quam interdum efficitur vitae lectus porttitor mollis viverra condimentum.
+ Risus primis rhoncus scelerisque dapibus vitae parturient sagittis torquent varius.
+ Scelerisque pellentesque dignissim facilisi tincidunt cras torquent tristique eros.
+ Arcu metus fames fames viverra praesent iaculis varius?
+ Cursus suscipit inceptos luctus sociosqu senectus netus ante dictum.
+\end_layout
+
+\begin_layout Standard
+Consequat dictumst a tristique potenti iaculis malesuada accumsan cursus sed.
+ Tortor adipiscing adipiscing nullam himenaeos finibus cras.
+ Netus diam dolor litora et vel himenaeos.
+ Libero magna venenatis posuere tortor molestie feugiat consectetur.
+ Tincidunt non elementum pretium habitant torquent risus nostra.
+ Donec nec velit metus ligula donec.
+ Duis sollicitudin habitasse volutpat ac himenaeos odio urna.
+ Nullam aliquam integer curabitur blandit facilisis nascetur.
+ Laoreet ultricies donec himenaeos dui aptent.
+\end_layout
+
+\begin_layout Standard
+Mattis ad faucibus eros senectus pulvinar et potenti.
+ Semper rhoncus odio ac condimentum,
+ placerat litora nunc.
+ Taciti adipiscing nulla litora primis orci faucibus morbi vehicula.
+ Venenatis proin nibh convallis eget fringilla placerat.
+ Placerat tristique lacinia nascetur auctor porta vestibulum ac maecenas.
+ Magnis eros hendrerit in praesent condimentum ornare.
+ Nunc tincidunt dapibus quis viverra feugiat pharetra magna.
+ Fringilla iaculis mollis conubia sociosqu montes accumsan nisl erat id?
+ Amet at dapibus augue ornare scelerisque elit?
+\end_layout
+
+\begin_layout Standard
+Vitae magnis lectus elit consequat non aptent lacinia.
+ Senectus libero arcu sapien turpis ex tortor.
+ Sollicitudin inceptos sed porta phasellus cursus facilisis.
+ Nulla tempus facilisi dis orci mi cursus nisl.
+ Porta cursus ut cursus ultricies lobortis diam cubilia.
+ Felis sagittis blandit morbi imperdiet ultrices accumsan.
+ Massa faucibus nisl volutpat egestas enim.
+\end_layout
+
+\begin_layout Standard
+Mus ut convallis fusce magnis consectetur.
+ Cubilia gravida magna bibendum cubilia tincidunt aenean ac.
+ Magnis nulla sodales vitae volutpat fusce.
+ Ultricies conubia mi inceptos laoreet blandit.
+ Sagittis viverra cras adipiscing metus integer nunc curabitur integer.
+ Congue montes auctor rutrum eros praesent eu.
+ Dolor massa finibus lobortis sit odio posuere tempus.
+ Justo euismod ridiculus per dignissim ridiculus laoreet rutrum turpis.
+ Ornare efficitur suspendisse at massa,
+ mollis nascetur aptent ultrices.
+\end_layout
+
+\begin_layout Section
+Related Work
+\end_layout
+
+\begin_layout Standard
+Nostra sit dolor tellus netus litora.
+ Nisl lectus semper arcu rutrum tempus ultrices.
+ Et quisque volutpat amet class curae tellus.
+ Sem aenean sit curabitur quis et accumsan dapibus.
+ Torquent finibus morbi maecenas sollicitudin platea aliquet.
+ Molestie vel tristique urna lacinia himenaeos montes curae gravida.
+\end_layout
+
+\begin_layout Standard
+Inceptos integer tristique leo class suspendisse adipiscing.
+ Consequat laoreet facilisis sollicitudin cubilia quis condimentum vivamus.
+ Venenatis cubilia felis est et accumsan sed.
+ Senectus et rutrum mattis praesent sit,
+ integer augue rhoncus nisi.
+ Ut litora magnis dis purus curabitur magnis.
+ Potenti blandit a rhoncus leo nascetur.
+ Nostra lectus molestie ipsum nulla tempor penatibus nostra odio?
+ Mattis vulputate amet feugiat ac et maecenas fames.
+ Curae id ultrices laoreet tortor,
+ volutpat cras risus nisi.
+ Odio cursus lectus ultricies dignissim ex placerat curabitur at feugiat.
+\end_layout
+
+\begin_layout Standard
+Morbi et habitant tempor;
+ lorem senectus justo facilisis!
+ Hac scelerisque morbi fermentum orci facilisis eget sed venenatis.
+ Ipsum tortor dictum conubia duis tellus neque sapien.
+ Cras ornare neque erat proin felis varius mollis.
+ Placerat mus magna gravida;
+ ad sociosqu condimentum ligula.
+ Tincidunt dignissim nisl justo laoreet fermentum taciti.
+ Hac senectus facilisi hendrerit metus ut enim facilisis nulla.
+ Vehicula ligula risus libero adipiscing,
+ quam parturient egestas arcu.
+ Odio aliquet etiam ultrices egestas non ullamcorper.
+\end_layout
+
+\begin_layout Standard
+Habitasse velit finibus quisque conubia risus est.
+ Malesuada urna eleifend curae cursus volutpat conubia potenti elementum.
+ In lorem aptent conubia aliquet nascetur sagittis hac nec.
+ Id erat posuere natoque ridiculus potenti litora maximus.
+ Nulla laoreet feugiat felis cursus sodales rhoncus eleifend.
+ Facilisis hac elementum mi eget class lectus viverra neque nam.
+\end_layout
+
+\begin_layout Section
+Attack Description
+\end_layout
+
+\begin_layout Standard
+Velit fermentum interdum molestie dictum porta dolor conubia.
+ Ligula vestibulum euismod eget cras ipsum malesuada.
+ Convallis eu aliquam conubia ipsum ante amet.
+ Sollicitudin dui libero fames,
+ feugiat suspendisse platea posuere.
+ Dictum massa platea efficitur nullam sagittis curae ullamcorper sed.
+ Ipsum tincidunt a parturient quisque porta.
+ Sociosqu ligula ad vulputate faucibus ac consectetur.
+ Purus ac dis montes condimentum odio.
+\end_layout
+
+\begin_layout Standard
+Aliquet maximus fames purus dictum aenean bibendum conubia finibus.
+ Lacinia nostra praesent senectus;
+ rhoncus blandit massa.
+ Praesent amet vulputate nam eleifend etiam leo.
+ Inceptos leo mus imperdiet integer diam donec duis quisque donec.
+ Euismod eleifend hendrerit platea ultricies porttitor elit.
+ Quis eget penatibus facilisis senectus non viverra aliquam mauris.
+\end_layout
+
+\begin_layout Standard
+Egestas hendrerit donec mus pretium eleifend.
+ Nec sodales leo aenean odio senectus parturient.
+ Laoreet faucibus consectetur hac mus facilisis pretium,
+ finibus pulvinar porta.
+ Porttitor rhoncus aliquet quis auctor porta class lacinia laoreet rutrum.
+ Consequat sollicitudin purus eleifend ut senectus condimentum lacinia.
+ Eleifend faucibus eros tristique cubilia dignissim dui curabitur massa.
+ Cursus vehicula torquent molestie;
+ efficitur nisi tellus in platea.
+ Dapibus montes sem ultrices;
+ per enim efficitur ipsum.
+ Bibendum arcu potenti magnis quisque vehicula leo venenatis gravida.
+\end_layout
+
+\begin_layout Section
+Design
+\end_layout
+
+\begin_layout Standard
+Rutrum vivamus convallis arcu eget mattis.
+ Fringilla nascetur eros imperdiet rutrum nascetur dignissim scelerisque aptent.
+ Pellentesque curabitur nunc dapibus mi curabitur lectus vulputate.
+ Fermentum hendrerit posuere placerat praesent ipsum fringilla aliquam convallis ante.
+ Rhoncus curae venenatis maximus hendrerit parturient ligula fringilla mi augue.
+ Et congue posuere morbi per augue mauris sociosqu.
+ Nibh litora torquent fringilla pulvinar interdum tristique elementum.
+ Maecenas phasellus venenatis augue litora amet magnis ipsum donec enim.
+ Nec accumsan urna rhoncus ridiculus morbi elit.
+ Volutpat iaculis conubia iaculis mus a posuere sagittis.
+\end_layout
+
+\begin_layout Standard
+Quam eros et porttitor sollicitudin quisque condimentum non est sit.
+ Aptent ornare risus ad erat pretium quam.
+ Nascetur faucibus dis lorem faucibus metus;
+ at rhoncus.
+ Posuere inceptos montes est facilisi euismod elit.
+ Vehicula magnis mi porta rutrum;
+ vivamus magnis fusce nullam.
+ Phasellus scelerisque integer mollis curae id mollis facilisi aliquam.
+ Dolor lacinia sollicitudin platea habitant consectetur.
+ Senectus integer sagittis penatibus adipiscing malesuada lectus.
+\end_layout
+
+\begin_layout Section
+CTF Instructions
+\end_layout
+
+\begin_layout Standard
+Nam consectetur nullam finibus posuere montes ex nibh turpis.
+ Hac non ligula fringilla per torquent posuere natoque magnis quis.
+ Himenaeos scelerisque varius lobortis sollicitudin quisque sem.
+ Amet arcu posuere ultricies vitae finibus sagittis erat.
+ Egestas imperdiet dignissim platea;
+ lacus netus nunc felis dapibus.
+ Dapibus eleifend eleifend libero convallis ridiculus habitasse commodo.
+ Ante malesuada accumsan fames turpis amet litora.
+ Nullam pellentesque parturient cubilia bibendum inceptos,
+ quam sagittis.
+\end_layout
+
+\begin_layout Standard
+Nibh cubilia aliquam urna euismod est luctus sit primis in.
+ Donec fringilla dolor lobortis mattis imperdiet a.
+ Natoque rhoncus conubia aliquet;
+ bibendum ultricies curabitur.
+ Sit dolor faucibus amet himenaeos himenaeos lacinia sollicitudin.
+ Curae laoreet sagittis imperdiet mattis bibendum,
+ integer ex curae vulputate.
+ Sagittis posuere diam turpis,
+ nisl diam ullamcorper convallis.
+ Lectus semper urna mus elementum ultricies nostra mattis augue.
+\end_layout
+
+\begin_layout Standard
+Magna per ad fusce dignissim sagittis in neque sit.
+ Orci magna augue faucibus curabitur curae interdum.
+ Ligula pharetra inceptos mauris curae venenatis libero elementum.
+ Integer proin auctor dictumst praesent lorem lorem nostra potenti.
+ Interdum vel lacinia in consequat;
+ accumsan nulla aliquet massa.
+ Mauris porttitor lectus nullam dignissim sagittis semper.
+ Augue rhoncus aliquam;
+ tempus lectus urna suspendisse.
+ Lorem sed cursus primis vivamus laoreet felis aenean neque.
+ Nisl habitasse aliquam convallis sodales felis curae sit.
+\end_layout
+
+\begin_layout Section
+Conclusion
+\end_layout
+
+\begin_layout Standard
+Id aliquet vulputate nostra felis viverra inceptos.
+ Fames risus mi cursus diam aptent interdum.
+ Netus interdum integer interdum metus in facilisi dignissim et.
+ Suscipit elit hac at erat;
+ euismod dignissim nibh lacus.
+ Penatibus penatibus platea taciti neque est cras montes in.
+ Himenaeos ornare pulvinar tempor gravida ullamcorper euismod cras lectus tempor.
+ Duis senectus curabitur congue;
+ varius magnis metus.
+ Velit ipsum condimentum laoreet risus phasellus placerat elementum nibh.
+ Porttitor mauris hendrerit dis penatibus porttitor eget phasellus porta.
+ Lacus sociosqu habitasse per et nulla phasellus a montes parturient.
+\end_layout
+
+\begin_layout Standard
+Sociosqu donec ullamcorper taciti at suscipit quisque facilisis.
+ Auctor iaculis penatibus faucibus ornare euismod enim.
+ Eleifend nisi et litora aptent vitae.
+ Morbi vulputate dui netus eleifend per sapien quam.
+ Cursus quam in tempus proin erat sollicitudin.
+ Quis facilisi ad placerat aenean sollicitudin dictum nascetur nullam.
+ Augue curabitur vivamus posuere natoque lectus;
+ mi ac nam ex.
+ Litora fames dapibus eget mauris montes ut suspendisse himenaeos.
+ Orci ligula morbi dis semper litora molestie lorem.
+\end_layout
+
+\begin_layout Section*
+Contributions
+\end_layout
+
+\begin_layout Standard
+Per et mi maecenas commodo consequat magna elementum fames.
+ Felis aenean orci venenatis nisl blandit.
+ Non accumsan arcu tristique elit ex parturient vulputate neque.
+ Justo dui hac praesent fermentum lobortis;
+ euismod penatibus luctus.
+ Cras inceptos suscipit ridiculus porta dignissim orci.
+ Porta quam ac nulla elementum sociosqu accumsan potenti est?
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-2"
+
+\end_inset
+
+bfbobo
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-3"
+
+\end_inset
+
+bvcobvcfd
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-4"
+
+\end_inset
+
+ogfdfg
+\end_layout
+
+\end_body
+\end_document
