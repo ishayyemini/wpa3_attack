@@ -1,11 +1,10 @@
 cmake-build-debug
 .venv
 
-admin/hostap-wpa3
 admin/hostapd
+admin/hostapd_current.conf
+admin/MAC_AP
 
-user/dragondrain-and-time
-user/hostap-wpa3
 user/fingerprint
 user/dragontime
 user/MAC_AP
