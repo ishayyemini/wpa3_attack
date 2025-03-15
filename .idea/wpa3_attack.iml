@@ -2,7 +2,7 @@
 <module classpath="CMake" type="CPP_MODULE" version="4">
   <component name="FacetManager">
     <facet type="Python" name="Python facet">
-      <configuration sdkName="Python 3.11 (wpa3_attack)" />
+      <configuration sdkName="Python 3.12 (wpa3_attack)" />
     </facet>
   </component>
 </module>
