@@ -4,9 +4,11 @@ cmake-build-debug
 admin/hostapd
 admin/hostapd_current.conf
 admin/MAC_AP
+admin/hostap-wpa3/hostapd/hostapd
 
 user/fingerprint
 user/dragontime
 user/MAC_AP
 user/MAC_USER
 user/DEVICE
+user/fingerprint-wpa3/hostapd/fingerprint
