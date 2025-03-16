@@ -22,16 +22,7 @@ static void card_open(struct state *state, char *dev) {
 		err(1, "card_set_chan()");
 }
 
-static int card_read(const struct state *state, void *buf, int len, struct rx_info *ri) {
-	int rc;
-
-	if ((rc = wi_read(state->wi, NULL, 0, buf, len, ri)) == -1)
-		err(1, "wi_read()");
-
-	return rc;
-}
-
-static int card_write(const struct state *state, void *buf, int len) {
+static int card_write(const struct state *state, void *buf, const int len) {
 	return wi_write(state->wi, NULL, 0, buf, len, NULL);
 }
 
@@ -40,15 +31,15 @@ static int get_group(const int group, unsigned char *buf) {
 
 	switch (group) {
 		case 22:
-			len = (int) AUTH_REQ_SAE_COMMIT_GROUP_22_SIZE;
+			len = AUTH_REQ_SAE_COMMIT_GROUP_22_SIZE;
 			memcpy(buf, AUTH_REQ_SAE_COMMIT_GROUP_22, len);
 			break;
 		case 23:
-			len = (int) AUTH_REQ_SAE_COMMIT_GROUP_23_SIZE;
+			len = AUTH_REQ_SAE_COMMIT_GROUP_23_SIZE;
 			memcpy(buf, AUTH_REQ_SAE_COMMIT_GROUP_23, len);
 			break;
 		case 24:
-			len = (int) AUTH_REQ_SAE_COMMIT_GROUP_24_SIZE;
+			len = AUTH_REQ_SAE_COMMIT_GROUP_24_SIZE;
 			memcpy(buf, AUTH_REQ_SAE_COMMIT_GROUP_24, len);
 			break;
 		default:
@@ -84,7 +75,7 @@ static void inject_deauth(const struct state *state) {
 	memcpy(buf + 10, state->srcaddr, 6);
 	memcpy(buf + 16, state->bssid, 6);
 
-	if (card_write(state, buf, (int) DEAUTH_FRAME_SIZE) == -1)
+	if (card_write(state, buf, DEAUTH_FRAME_SIZE) == -1)
 		perror("card_write");
 }
 
@@ -102,7 +93,7 @@ static void queue_next_commit(const struct state *state) {
 		perror("timerfd_settime()");
 }
 
-static void process_packet(struct state *state, const unsigned char *buf, int len) {
+static void process_packet(struct state *state, const unsigned char *buf, const int len) {
 	int pos_bssid, pos_src;
 
 	/* Ignore retransmitted frames */
@@ -224,8 +215,8 @@ static int card_receive(struct state *state) {
 	int len;
 	struct rx_info ri;
 
-	if ((len = card_read(state, buf, sizeof(buf), &ri)) < 0) {
-		fprintf(stderr, "%s: failed to read packet\n", __FUNCTION__);
+	if ((len = wi_read(state->wi, NULL, 0, buf, sizeof(buf), &ri)) < 0) {
+		fprintf(stderr, "Failed to read packet\n");
 		return -1;
 	}
 
