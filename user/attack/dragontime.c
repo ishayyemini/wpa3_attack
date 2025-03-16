@@ -22,7 +22,7 @@ static void card_open(struct state *state, char *dev) {
 		err(1, "card_set_chan()");
 }
 
-static int card_read(struct state *state, void *buf, int len, struct rx_info *ri) {
+static int card_read(const struct state *state, void *buf, int len, struct rx_info *ri) {
 	int rc;
 
 	if ((rc = wi_read(state->wi, NULL, 0, buf, len, ri)) == -1)
@@ -31,7 +31,7 @@ static int card_read(struct state *state, void *buf, int len, struct rx_info *ri
 	return rc;
 }
 
-static int card_write(struct state *state, void *buf, int len) {
+static int card_write(const struct state *state, void *buf, int len) {
 	return wi_write(state->wi, NULL, 0, buf, len, NULL);
 }
 
@@ -77,7 +77,7 @@ static void inject_sae_commit(struct state *state) {
 	state->got_reply = 0;
 }
 
-static void inject_deauth(struct state *state) {
+static void inject_deauth(const struct state *state) {
 	unsigned char *buf = DEAUTH_FRAME;
 
 	memcpy(buf + 4, state->bssid, 6);
@@ -88,7 +88,7 @@ static void inject_deauth(struct state *state) {
 		perror("card_write");
 }
 
-static void queue_next_commit(struct state *state) {
+static void queue_next_commit(const struct state *state) {
 	struct itimerspec timespec;
 
 	/* initial expiration of the timer */
@@ -102,7 +102,7 @@ static void queue_next_commit(struct state *state) {
 		perror("timerfd_settime()");
 }
 
-static void process_packet(struct state *state, unsigned char *buf, int len) {
+static void process_packet(struct state *state, const unsigned char *buf, int len) {
 	int pos_bssid, pos_src;
 
 	/* Ignore retransmitted frames */
@@ -234,7 +234,7 @@ static int card_receive(struct state *state) {
 	return len;
 }
 
-static void check_timeout(struct state *state) {
+static void check_timeout(const struct state *state) {
 	struct timespec curr, diff;
 
 	if (!state->started_attack)
