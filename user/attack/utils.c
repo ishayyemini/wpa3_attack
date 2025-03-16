@@ -2,7 +2,7 @@
 
 #include "utils.h"
 
-int hexCharToInt(unsigned char c) {
+int hexCharToInt(const unsigned char c) {
 	static int table_created = 0;
 	static int table[256];
 
@@ -76,7 +76,7 @@ int hexCharToInt(unsigned char c) {
 	return table[c];
 }
 
-int getmac(const char *macAddress, const int strict, unsigned char *mac) {
+int get_mac(const char *macAddress, const int strict, unsigned char *mac) {
 	char byte[3];
 	int i, nbElem, n;
 
@@ -112,4 +112,41 @@ int getmac(const char *macAddress, const int strict, unsigned char *mac) {
 	if ((strict && nbElem != 6) || (!strict && nbElem > 6)) return 1;
 
 	return 0;
+}
+
+const unsigned char *get_src_from_packet(const unsigned char *buf) {
+	int pos_src;
+
+	switch (buf[1] & 3) {
+		case 0:
+		case 1:
+			pos_src = 10;
+			break;
+		case 2:
+			pos_src = 16;
+			break;
+		default:
+			pos_src = 24;
+			break;
+	}
+
+	return buf + pos_src;
+}
+
+const unsigned char *get_bssid_from_packet(const unsigned char *buf) {
+	int pos_bssid;
+
+	switch (buf[1] & 3) {
+		case 0:
+			pos_bssid = 16;
+			break;
+		case 1:
+			pos_bssid = 4;
+			break;
+		default:
+			pos_bssid = 10;
+			break;
+	}
+
+	return buf + pos_bssid;
 }

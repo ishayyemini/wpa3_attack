@@ -7,6 +7,30 @@
 
 #define USED_RATE 54000000
 
+
+static struct state {
+	struct wif *wi;
+	unsigned char bssid[6];
+	unsigned char srcaddr[6];
+	int group;
+	const char *output_file;
+	FILE *fp;
+
+	// Timing specific
+	struct timespec prev_commit;
+	int got_reply;
+	long sum_time[256];
+	int num_injected[256];
+	int curraddr;
+	int time_fd_inject;
+	int num_addresses;
+
+	int started_attack;
+	int delay;
+	int timeout;
+} _state;
+
+
 unsigned char AUTH_REQ_SAE_COMMIT_GROUP_22[] =
 		/* 802.11 header */
 		"\xb0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
@@ -128,24 +152,35 @@ unsigned char DEAUTH_FRAME[] =
 		"\x00\x00\x00\x00\x00\x00\x60\x5f\x03\x00";
 int DEAUTH_FRAME_SIZE = sizeof(DEAUTH_FRAME) - 1;
 
-static struct state {
-	struct wif *wi;
-	unsigned char bssid[6];
-	unsigned char srcaddr[6];
-	int group;
-	const char *output_file;
-	FILE *fp;
 
-	// Timing specific
-	struct timespec prev_commit;
-	int got_reply;
-	long sum_time[256];
-	int num_injected[256];
-	int curraddr;
-	int time_fd_inject;
-	int num_addresses;
+static struct state *get_state(void);
 
-	int started_attack;
-	int delay;
-	int timeout;
-} _state;
+static int get_group(int group_id, unsigned char *buf);
+
+void send_anti_clogging(struct state *state, const unsigned char *buf, int len);
+
+static int card_write(const struct state *state, void *buf, int len);
+
+static void card_open(struct state *state, char *dev);
+
+static int card_receive(struct state *state);
+
+static void copy_header(const struct state *state, unsigned char *buf);
+
+static void inject_sae_commit(struct state *state);
+
+static void inject_deauth(const struct state *state);
+
+static void queue_next_commit(const struct state *state);
+
+static void process_packet(struct state *state, const unsigned char *buf, int len);
+
+static void check_timeout(const struct state *state);
+
+static void print_initial_info(FILE *fp, const struct state *state);
+
+static void event_loop(struct state *state, char *dev);
+
+static void sighandler(int signum);
+
+int main(const int argc, char *argv[]);

