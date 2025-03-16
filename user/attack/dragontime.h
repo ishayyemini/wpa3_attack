@@ -2,15 +2,15 @@
 #define DRAGONTIME_H
 
 #include <signal.h>
-#include <openssl/ec.h>
 
 #endif //DRAGONTIME_H
 
 #define USED_RATE 54000000
 
-unsigned char AUTH_REQ_SAE_COMMIT_GROUP_22[] = /* 802.11 header */
-		"\xb0\x00\x00\x00\xBB\xBB\xBB\xBB\xBB\xBB\xCC\xCC\xCC\xCC\xCC\xCC"
-		"\xBB\xBB\xBB\xBB\xBB\xBB\x00\x00"
+unsigned char AUTH_REQ_SAE_COMMIT_GROUP_22[] =
+		/* 802.11 header */
+		"\xb0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+		"\x00\x00\x00\x00\x00\x00\x00\x00"
 		/* SAE Commit frame */
 		"\x03\x00\x01\x00\x00\x00\x16\x00"
 		/* Scalar */
@@ -37,8 +37,8 @@ int AUTH_REQ_SAE_COMMIT_GROUP_22_SIZE = sizeof(AUTH_REQ_SAE_COMMIT_GROUP_22) - 1
 
 unsigned char AUTH_REQ_SAE_COMMIT_GROUP_23[] =
 		/* 802.11 header */
-		"\xb0\x00\x00\x00\xBB\xBB\xBB\xBB\xBB\xBB\xCC\xCC\xCC\xCC\xCC\xCC"
-		"\xBB\xBB\xBB\xBB\xBB\xBB\x00\x00"
+		"\xb0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+		"\x00\x00\x00\x00\x00\x00\x00\x00"
 		/* SAE Commit frame */
 		"\x03\x00\x01\x00\x00\x00\x17"
 		/* Scalar */
@@ -81,8 +81,8 @@ int AUTH_REQ_SAE_COMMIT_GROUP_23_SIZE = sizeof(AUTH_REQ_SAE_COMMIT_GROUP_23) - 1
 
 unsigned char AUTH_REQ_SAE_COMMIT_GROUP_24[] =
 		/* 802.11 header */
-		"\xb0\x00\x00\x00\xBB\xBB\xBB\xBB\xBB\xBB\xCC\xCC\xCC\xCC\xCC\xCC"
-		"\xBB\xBB\xBB\xBB\xBB\xBB\x00\x00"
+		"\xb0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+		"\x00\x00\x00\x00\x00\x00\x00\x00"
 		/* SAE Commit frame */
 		"\x03\x00\x01\x00\x00\x00\x18\x00"
 		/* Scalar */
@@ -128,23 +128,10 @@ unsigned char DEAUTH_FRAME[] =
 		"\x00\x00\x00\x00\x00\x00\x60\x5f\x03\x00";
 int DEAUTH_FRAME_SIZE = sizeof(DEAUTH_FRAME) - 1;
 
-struct state_ecc {
-	const EC_GROUP *group;
-	const EC_POINT *generator;
-	EC_POINT *element;
-	BIGNUM *prime;
-	BIGNUM *a;
-	BIGNUM *b;
-	BIGNUM *order;
-	BN_CTX *bnctx;
-	BIGNUM *scalar;
-};
-
 static struct state {
 	struct wif *wi;
 	unsigned char bssid[6];
 	unsigned char srcaddr[6];
-	int debug_level;
 	int group;
 	const char *output_file;
 	FILE *fp;
@@ -161,7 +148,4 @@ static struct state {
 	int started_attack;
 	int delay;
 	int timeout;
-
-	// Elliptic curve crypto
-	struct state_ecc ecc;
 } _state;

