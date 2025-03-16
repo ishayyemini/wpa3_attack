@@ -152,8 +152,13 @@ static void process_packet(struct state *state, const unsigned char *buf, const 
 			struct timespec curr, diff;
 			clock_gettime(CLOCK_MONOTONIC, &curr);
 
-			diff.tv_nsec = curr.tv_nsec - state->prev_commit.tv_nsec;
-			diff.tv_sec = curr.tv_sec - state->prev_commit.tv_sec;
+			if (curr.tv_nsec > state->prev_commit.tv_nsec) {
+				diff.tv_nsec = curr.tv_nsec - state->prev_commit.tv_nsec;
+				diff.tv_sec = curr.tv_sec - state->prev_commit.tv_sec;
+			} else {
+				diff.tv_nsec = 1000000000 + curr.tv_nsec - state->prev_commit.tv_nsec;
+				diff.tv_sec = curr.tv_sec - state->prev_commit.tv_sec - 1;
+			}
 
 			state->sum_time[state->curraddr] += diff.tv_nsec;
 			state->num_injected[state->curraddr] += 1;
