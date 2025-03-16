@@ -246,6 +246,16 @@ static void check_timeout(const struct state *state) {
 	}
 }
 
+static void print_initial_info(FILE *fp, const struct state *state) {
+	fprintf(fp, "BSSID %02X:%02X:%02X:%02X:%02X:%02X\n", state->bssid[0], state->bssid[1], state->bssid[2],
+	        state->bssid[3], state->bssid[4], state->bssid[5]);
+	fprintf(fp, "Spoofing %02X:%02X:%02X:%02X:%02X:[00-%02X]\n", state->srcaddr[0], state->srcaddr[1],
+	        state->srcaddr[2], state->srcaddr[3], state->srcaddr[4], state->num_addresses - 1);
+	fprintf(fp, "Group %d\n", state->group);
+	fprintf(fp, "Timeout %d\n", state->timeout);
+	fprintf(fp, "Delay %d\n", state->delay);
+}
+
 static void event_loop(struct state *state, char *dev) {
 	struct pollfd fds[3];
 	struct itimerspec timespec;
@@ -256,20 +266,8 @@ static void event_loop(struct state *state, char *dev) {
 	wi_get_mac(state->wi, state->srcaddr);
 
 	// 2. Display all info we need to perform the dictionary attack & also write it to file
-	printf("Targeting BSSID %02X:%02X:%02X:%02X:%02X:%02X\n", state->bssid[0], state->bssid[1],
-	       state->bssid[2], state->bssid[3], state->bssid[4], state->bssid[5]);
-	printf("Will spoof MAC addresses in the form %02X:%02X:%02X:%02X:%02X:[00-%02X]\n", state->srcaddr[0],
-	       state->srcaddr[1], state->srcaddr[2], state->srcaddr[3], state->srcaddr[4], state->num_addresses - 1);
-	printf("Performing attack using group %d\n", state->group);
-	printf("Using a retransmit timeout of %d ms, and a delay between commits of %d ms\n", state->timeout, state->delay);
-
-	fprintf(state->fp, "BSSID %02X:%02X:%02X:%02X:%02X:%02X\n", state->bssid[0],
-	        state->bssid[1], state->bssid[2], state->bssid[3], state->bssid[4], state->bssid[5]);
-	fprintf(state->fp, "Spoofing %02X:%02X:%02X:%02X:%02X:[00-%02X]\n", state->srcaddr[0],
-	        state->srcaddr[1], state->srcaddr[2], state->srcaddr[3], state->srcaddr[4], state->num_addresses - 1);
-	fprintf(state->fp, "Group %d\n", state->group);
-	fprintf(state->fp, "Timeout %d\n", state->timeout);
-	fprintf(state->fp, "Delay %d\n", state->delay);
+	print_initial_info(stdout, state);
+	print_initial_info(state->fp, state);
 
 	// 3. Initialize further things to start the attack
 	state->srcaddr[5] = state->curraddr;
