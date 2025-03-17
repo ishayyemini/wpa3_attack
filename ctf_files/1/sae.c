@@ -439,7 +439,7 @@ fail:
 }
 
 
-static int sae_derive_pwe_ffc(struct sae_data *sae, const u8 *addr1,
+int sae_derive_pwe_ffc(struct sae_data *sae, const u8 *addr1,
                               const u8 *addr2, const u8 *password,
                               size_t password_len) {
     u8 counter, k, sel_counter = 0;
@@ -2309,40 +2309,4 @@ const char *sae_state_txt(enum sae_state state) {
             return "Accepted";
     }
     return "?";
-}
-
-// Process a list of passwords and generate a fingerprint for each of them
-int main(int argc, char *argv[]) {
-    if (argc != 3) {
-        exit(1);
-    }
-
-    // 1. Open password dictionary and output csv
-    FILE *pas_fd = fopen(argv[1], "r");
-    FILE *out_fd = fopen(argv[2], "w");
-
-    // 2. Calculate two addresses
-    u8 addr1[6] = {/* Complete */};
-    u8 addr2[6] = {/* Complete */};
-
-    // 3. Define DH group, with prime, prime_len, order and order_len
-    struct dh_group *my_dh_group = calloc(1, sizeof(struct dh_group));
-    my_dh_group->prime = /* Complete */;
-    my_dh_group->prime_len = /* Complete */;
-    my_dh_group->order = /* Complete */;
-    my_dh_group->order_len = /* Complete */;
-
-    // 4. Define SAE temporary data, with prime_len, order, prime and dh
-    struct sae_temporary_data *my_tmp = calloc(1, sizeof(struct sae_temporary_data));
-    my_tmp->prime_len = my_dh_group->prime_len;
-    my_tmp->order = crypto_bignum_init_set(my_dh_group->order, my_dh_group->order_len);
-    my_tmp->prime = crypto_bignum_init_set(my_dh_group->prime, my_dh_group->prime_len);
-    my_tmp->dh = my_dh_group;
-
-    // 5. Define SAE data, with tmp
-    struct sae_data *my_sae = calloc(1, sizeof(struct sae_data));
-    my_sae->tmp = my_tmp;
-
-    // 6. For each password from the dictionary:
-    //    Generate a fingerprint, consisting of the iterations amount of sae_derive_pwe_ffc for each MAC address
 }
