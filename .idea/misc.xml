@@ -12,6 +12,7 @@
   <component name="CidrRootsConfiguration">
     <sourceRoots>
       <file path="$PROJECT_DIR$/user/attack" />
+      <file path="$PROJECT_DIR$/user/finger" />
     </sourceRoots>
     <excludeRoots>
       <file path="$PROJECT_DIR$/venv" />

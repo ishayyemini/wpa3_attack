@@ -168,5 +168,7 @@ int sae_check_confirm_pk(struct sae_data *sae, const u8 *ies, size_t ies_len);
 int sae_hash(size_t hash_len, const u8 *data, size_t len, u8 *hash);
 u32 sae_pk_get_be19(const u8 *buf);
 void sae_pk_buf_shift_left_19(u8 *buf, size_t len);
-
+int sae_derive_pwe_ffc(struct sae_data *sae, const u8 *addr1,
+							  const u8 *addr2, const u8 *password,
+							  size_t password_len);
 #endif /* SAE_H */
