@@ -171,6 +171,8 @@ static void inject_sae_commit(struct state *state);
 
 static void inject_deauth(const struct state *state);
 
+static void calc_prev_commit_diff(const struct state *state, struct timespec *diff);
+
 static void queue_next_commit(const struct state *state);
 
 static void process_packet(struct state *state, const unsigned char *buf, int len);
