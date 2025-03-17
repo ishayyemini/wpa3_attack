@@ -5,7 +5,7 @@ from sklearn.cluster import AgglomerativeClustering as agc
 
 
 # Converts measurements to pandas dataframe
-def extract_data(path):
+def extract_data(path) -> pd.DataFrame:
     file = open(path)
     data = file.readlines()
     file.close()
@@ -17,19 +17,21 @@ def extract_data(path):
     data = [(int(line[1][:-1], 16), int(line[2][:-1], 10)) for line in data]
     return pd.DataFrame(data, columns=["STA", "Time"])
 
+
 def get_address_quantiles(df, addrs=20, low=0.3, high=0.5):
     addr_quantiles = pd.DataFrame(  # min_iterations3() doesn't use low,high but iterations() does so they are added here
-            [
-                (
-                    j,
-                    df["Time"][df["STA"] == j].quantile(low),
-                    df["Time"][df["STA"] == j].quantile(high),
-                )
-                for j in range(addrs)
-            ],
-            columns=["STA", "Low Quantile", "High Quantile"],
-        )
+        [
+            (
+                j,
+                df["Time"][df["STA"] == j].quantile(low),
+                df["Time"][df["STA"] == j].quantile(high),
+            )
+            for j in range(addrs)
+        ],
+        columns=["STA", "Low Quantile", "High Quantile"],
+    )
     return addr_quantiles
+
 
 def qplot(df, addrs=20):
     for j in range(addrs):
@@ -87,20 +89,15 @@ def estimate_iter_time(qsums):
     return sum(itr_time_low_high) / 2
 
 
-def iterations(df, addrs=20, low=0.15, high=0.35, version=1, distance_threshold=10000):
+def iterations(df, addrs=20, low=0.15, high=0.35):
     """returns a DataFrame list of iterations for each address, assuming there are addresses with 1,2,3 iterations
     version {1,2,3} decides which min_iterations is used
     distance_threshold is only used in version 3"""
-    
 
-    if version == 1:
-        addr_quantiles = min_iterations(df, addrs, low, high)
-    elif version == 2:
-        addr_quantiles = min_iterations2(df, addrs, low, high)
-    elif version == 3:
-        addr_quantiles = get_address_quantiles(df, addrs, low, high)
-        addr_quantiles["min_iters"] = min_iterations3(df, addrs, distance_threshold)
+    addr_quantiles = min_iterations(df, addrs, low, high)
 
+    # A new column for estimated iteration count
+    addr_quantiles["est_iters"] = 0
 
     qsums = [
         (
@@ -118,9 +115,6 @@ def iterations(df, addrs=20, low=0.15, high=0.35, version=1, distance_threshold=
 
     # average time of 1 iteration execution within the quantile range
     time_1 = (qsums[0][1] + qsums[0][2]) / (2 * qsums[0][0])
-
-    # A new column for estimated iteration count
-    addr_quantiles["est_iters"] = 0
 
     for i in range(4, maximal_min_iter + 1):
         sum_low_quantile = addr_quantiles["Low Quantile"][
