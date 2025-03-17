@@ -19,7 +19,15 @@ MAC_USER=$(ip link show "$DEVICE" | grep link/ether | awk '{print $2}')
 echo "$MAC_USER" > MAC_USER
 
 # Compiles fingerprint
-cp fingerprint-wpa3/hostapd/defconfig fingerprint-wpa3/hostapd/.config
+echo '#include "utils/includes.h"
+#include "utils/common.h"
+#include "crypto/crypto.h"
+#include "crypto/dh_groups.h"
+#include "common/sae.h"
+' > fingerprint-wpa3/hostapd/main.c
+cat finger/fingerprint.c >> fingerprint-wpa3/hostapd/main.c
+sed -i 's/#include "fingerprint.h"//' fingerprint-wpa3/hostapd/main.c
+cp finger/sae.c fingerprint-wpa3/src/common/sae.c
 (cd fingerprint-wpa3/hostapd && make)
 if [ -e "fingerprint" ]; then
   rm -f fingerprint
