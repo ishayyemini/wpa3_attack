@@ -12,3 +12,4 @@ user/MAC_AP
 user/MAC_USER
 user/DEVICE
 user/fingerprint-wpa3/hostapd/fingerprint
+user/attack/dragontime

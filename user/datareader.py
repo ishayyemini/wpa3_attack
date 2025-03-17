@@ -17,6 +17,19 @@ def extract_data(path):
     data = [(int(line[1][:-1], 16), int(line[2][:-1], 10)) for line in data]
     return pd.DataFrame(data, columns=["STA", "Time"])
 
+def get_address_quantiles(df, addrs=20, low=0.3, high=0.5):
+    addr_quantiles = pd.DataFrame(  # min_iterations3() doesn't use low,high but iterations() does so they are added here
+            [
+                (
+                    j,
+                    df["Time"][df["STA"] == j].quantile(low),
+                    df["Time"][df["STA"] == j].quantile(high),
+                )
+                for j in range(addrs)
+            ],
+            columns=["STA", "Low Quantile", "High Quantile"],
+        )
+    return addr_quantiles
 
 def qplot(df, addrs=20):
     for j in range(addrs):
@@ -31,17 +44,8 @@ def qplot(df, addrs=20):
 
 def min_iterations(df, addrs=20, low=0.3, high=0.5):
     """retuns a DataFrame list of minimum iterations preformed for each address using Crosby's box test. this is a lower bound on the true number"""
-    addr_quantiles = pd.DataFrame(
-        [
-            (
-                j,
-                df["Time"][df["STA"] == j].quantile(low),
-                df["Time"][df["STA"] == j].quantile(high),
-            )
-            for j in range(addrs)
-        ],
-        columns=["STA", "Low Quantile", "High Quantile"],
-    )
+
+    addr_quantiles = get_address_quantiles(df, addrs, low, high)
 
     # adding a new column for the lower bound
     addr_quantiles["min_iters"] = 0
@@ -83,27 +87,21 @@ def estimate_iter_time(qsums):
     return sum(itr_time_low_high) / 2
 
 
-def iterations(df, addrs=20, low=0.3, high=0.5, version=1, distance_threshold=10000):
+def iterations(df, addrs=20, low=0.15, high=0.35, version=1, distance_threshold=10000):
     """returns a DataFrame list of iterations for each address, assuming there are addresses with 1,2,3 iterations
     version {1,2,3} decides which min_iterations is used
     distance_threshold is only used in version 3"""
+    
+
     if version == 1:
         addr_quantiles = min_iterations(df, addrs, low, high)
     elif version == 2:
         addr_quantiles = min_iterations2(df, addrs, low, high)
     elif version == 3:
-        addr_quantiles = pd.DataFrame(  # min_iterations3() doesn't use low,high but iterations() does so they are added here
-            [
-                (
-                    j,
-                    df["Time"][df["STA"] == j].quantile(low),
-                    df["Time"][df["STA"] == j].quantile(high),
-                )
-                for j in range(addrs)
-            ],
-            columns=["STA", "Low Quantile", "High Quantile"],
-        )
+        addr_quantiles = get_address_quantiles(df, addrs, low, high)
         addr_quantiles["min_iters"] = min_iterations3(df, addrs, distance_threshold)
+
+
     qsums = [
         (
             (addr_quantiles["min_iters"] == j).sum(),
@@ -151,17 +149,7 @@ def min_iterations2(df, addrs=20, low=0.3, high=0.5):
     """retuns a DataFrame list of minimum iterations preformed for each address using Crosby's box test. this is a lower bound on the true number.
     this version assumes no overlap between the boxes of different iteration addresses, works better on data where all the addresess are further apart,
     but worse on data where addresses with different iterations are closer"""
-    addr_quantiles = pd.DataFrame(
-        [
-            (
-                j,
-                df["Time"][df["STA"] == j].quantile(low),
-                df["Time"][df["STA"] == j].quantile(high),
-            )
-            for j in range(addrs)
-        ],
-        columns=["STA", "Low Quantile", "High Quantile"],
-    )
+    addr_quantiles = get_address_quantiles(df, addrs, low, high)
 
     # adding a new column for the lower bound
     addr_quantiles["min_iters"] = 0
@@ -200,6 +188,7 @@ def min_iterations3(df, addrs=20, distance_threshold=10000):
     """retuns a DataFrame list of minimum iterations preformed for each address using Agglomerative Clustering. this is a lower bound on the true number
     The algorithm starts with every point as a cluster, and recursively merges clusters in a way that minimizes the variance within clusters until all the clusters are further apart than the distance threshold
     """
+
     quantiles = [
         [df["Time"][df["STA"] == j].quantile(i / 50) for i in range(10, 40)]
         for j in range(addrs)

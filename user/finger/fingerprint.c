@@ -1,13 +1,7 @@
-#include "utils/includes.h"
-#include "utils/common.h"
-#include "crypto/crypto.h"
-#include "crypto/dh_groups.h"
-#include "common/sae.h"
-
 #include <stdlib.h>
 #include <stdio.h>
 
-
+#include "fingerprint.h"
 
 // TODO from dh_groups.c
 static const u8 dh_group24_prime[] = {
