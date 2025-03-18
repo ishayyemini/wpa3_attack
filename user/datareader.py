@@ -40,8 +40,9 @@ def qplot(df, addrs=20):
             [df["Time"][df["STA"] == j].quantile(i / 50) for i in range(50)],
             label=j,
         )
-    # plt.legend() if you care about which address matches which graph
-    # plt.show() if you don't wanna add anything else
+    # if you care about which address matches which graph
+    # plt.legend() 
+    plt.show()
 
 
 def min_iterations(df, addrs=20, low=0.3, high=0.5):
@@ -89,7 +90,7 @@ def estimate_iter_time(qsums):
     return sum(itr_time_low_high) / 2
 
 
-def iterations(df, addrs=20, low=0.15, high=0.35):
+def iterations(df, addrs=20, low=0.6, high=0.8):
     """returns a DataFrame list of iterations for each address, assuming there are addresses with 1,2,3 iterations
     version {1,2,3} decides which min_iterations is used
     distance_threshold is only used in version 3"""

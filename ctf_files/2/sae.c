@@ -672,7 +672,6 @@ static struct crypto_ec_point *sswu(struct crypto_ec *ec, int group,
     /* l = CEQ(m, 0)
      * t = CSEL(l, 0, inverse(m); where inverse(x) is calculated as
      * x^(p-2) modulo p which will handle m == 0 case correctly */
-    /* TODO: Make sure crypto_bignum_is_zero() is constant time */
     m_is_zero = const_time_eq(crypto_bignum_is_zero(t1), 1);
     /* t = m^(p-2) modulo p */
     if (crypto_bignum_sub(prime, two, t2) < 0 ||

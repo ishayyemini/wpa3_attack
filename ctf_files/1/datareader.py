@@ -19,6 +19,18 @@ def extract_data(path: str) -> pd.DataFrame:
     pass
 
 
+def qplot(df, addrs=20):
+    for j in range(addrs):
+        tmp = plt.plot(
+            range(0, 100, 2),
+            [df["Time"][df["STA"] == j].quantile(i / 50) for i in range(50)],
+            label=j,
+        )
+    # if you care about which address matches which graph
+    # plt.legend() 
+    plt.show()
+
+
 def get_address_quantiles(df: pd.DataFrame, low=0.15, high=0.35) -> pd.DataFrame:
     """
     Creates a pandas DataFrame containing, for each spoofed address:

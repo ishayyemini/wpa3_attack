@@ -22,6 +22,18 @@ def extract_data(path: str) -> pd.DataFrame:
     return pd.DataFrame(data, columns=["STA", "Time"])
 
 
+def qplot(df, addrs=20):
+    for j in range(addrs):
+        tmp = plt.plot(
+            range(0, 100, 2),
+            [df["Time"][df["STA"] == j].quantile(i / 50) for i in range(50)],
+            label=j,
+        )
+    # if you care about which address matches which graph
+    # plt.legend() 
+    plt.show()
+    
+
 def get_address_quantiles(df, addrs=20, low=0.3, high=0.5):
     addr_quantiles = pd.DataFrame(
         [
