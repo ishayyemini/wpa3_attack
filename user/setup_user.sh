@@ -36,10 +36,7 @@ ln -s fingerprint-wpa3/hostapd/fingerprint fingerprint
 
 # Compiles dragontime
 (cd attack && make)
-if [ -e "dragontime" ]; then
-  rm -f dragontime
-fi
-ln -s attack/dragontime dragontime
+mv attack/dragontime dragontime
 
 # Stops network manager
 sudo systemctl stop NetworkManager.service
