@@ -57,4 +57,4 @@ cp "$FOLDER.zip" "$CTFD_FOLDER/CTFd/uploads/user_files/$FOLDER.zip"
 python randomize_password.py "$CURR_CONFIG_FILE" "$DEVICE" "$PASSWORDS_FILE" "$FOLDER.zip"
 
 # Runs CTFd
-(cd "$CTFD_FOLDER" && python serve.py --port 4001)
+(cd "$CTFD_FOLDER" && python serve.py --port 4000)
