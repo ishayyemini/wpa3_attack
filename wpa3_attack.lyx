@@ -549,7 +549,15 @@ F_{X}^{-1}(low)\in\left[F_{Y}^{-1}(low),F_{Y}^{-1}(high)\right]
 
 \end_inset
 
-or
+
+\begin_inset Formula 
+\[
+\text{or}
+\]
+
+\end_inset
+
+
 \begin_inset Formula 
 \[
 F_{X}^{-1}(high)\in\left[F_{Y}^{-1}(low),F_{Y}^{-1}(high)\right]
@@ -563,6 +571,22 @@ F_{X}^{-1}(high)\in\left[F_{Y}^{-1}(low),F_{Y}^{-1}(high)\right]
 \begin_layout Standard
 We have attempted several methods of implementing this test.
  The difference between the methods is in the algorithm that decides which addresses give an equal iteration count.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection*
@@ -818,6 +842,22 @@ After running run_ctfd.sh,
 
 \begin_layout Standard
 sh run_hostapd.sh
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection*
@@ -922,26 +962,38 @@ Conclusion
 \end_layout
 
 \begin_layout Standard
-In this paper,
- we demonstrated the vulnerabilities in WPA3 by implementing a side-channel attack on the Dragonfly handshake protocol.
- Our work highlights the risks posed by improper implementations of cryptographic protocols and emphasizes the need for continuous security auditing.
- Through our CTF challenge,
- we aimed to educate players about these vulnerabilities,
- and provide hands-on experience with analyzing and exploiting security flaws.
+In the beginning of our project,
+ we sought to create a versatile CTF to highlight the need for a better understanding of cybersecurity and the need for it among the public.
+ We believe that our work has done that,
+ and culminated in a tool for learning that can be used by many.
+ 
 \end_layout
 
 \begin_layout Standard
-Our findings reinforce the importance of rigorous scrutiny in cybersecurity standards and the necessity of consistently updating protocols to mitigate newly discovered threats.
- Although WPA3 was designed to address the weaknesses of its predecessor,
- our research shows that even secure protocols can be compromised if not implemented correctly.
- This underscores the critical role of responsible disclosure and security awareness in maintaining the integrity of wireless communications.
+Seeing as even such a basic attack takes advantage of simple statistical tests of the protocol’s implementation,
+ it is our belief that a deeper understanding of maths and cryptography among the public is needed.
+ The attack itself exploits a stage in the dragonfly algorithm that is very slow.
+ Additionally,
+ its runtime is relative to both the password and the clients MAC address,
+ making the password easy to decode.
 \end_layout
 
 \begin_layout Standard
-Future research should focus on refining detection mechanisms for timing-based attacks,
- while also exploring alternative authentication protocols that are less susceptible to such vulnerabilities.
- By having an ongoing dialogue about Wi-Fi security,
- we can help drive improvements in wireless security standards and protect users from potential cyber threats.
+As this attack is a brute-force dictionary attack,
+ we see it as an opportunity to help the public understand some aspects of security,
+ one of which is secure password generation.
+ While the mathematical background to implement the attack from scratch is non-trivial,
+ our work shows that the attack can be converted into more digestible knowledge for those without said background.
+\end_layout
+
+\begin_layout Standard
+Finally,
+ in light of the above,
+ we predict that the relative ease of the implementation and the importance of the subject will make it much more popular in years to come.
+ Although not without problems,
+ as seen here,
+ it seems as though cybersecurity and the public interest in it will flourish in the future,
+ helping us all in keeping our privacy and in finding our way in this new interconnected world.
 \end_layout
 
 \begin_layout Section*
