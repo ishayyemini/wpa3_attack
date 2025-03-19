@@ -520,7 +520,7 @@ int sae_derive_pwe_ffc(struct sae_data *sae, const u8 *addr1,
 fail:
     crypto_bignum_deinit(pwe, 1);
     bin_clear_free(pwe_buf, prime_len * 2);
-	return sae->tmp->pwe_ffc ? 0 : -1;
+    return counter - 1;
 }
 
 
@@ -672,6 +672,7 @@ static struct crypto_ec_point *sswu(struct crypto_ec *ec, int group,
     /* l = CEQ(m, 0)
      * t = CSEL(l, 0, inverse(m); where inverse(x) is calculated as
      * x^(p-2) modulo p which will handle m == 0 case correctly */
+    /* TODO: Make sure crypto_bignum_is_zero() is constant time */
     m_is_zero = const_time_eq(crypto_bignum_is_zero(t1), 1);
     /* t = m^(p-2) modulo p */
     if (crypto_bignum_sub(prime, two, t2) < 0 ||
@@ -2309,3 +2310,4 @@ const char *sae_state_txt(enum sae_state state) {
     }
     return "?";
 }
+
