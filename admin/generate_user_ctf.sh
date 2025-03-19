@@ -3,7 +3,7 @@
 LEVEL="${1:-1}"
 FOLDER="user_ctf_$LEVEL"
 
-cp -r user "$FOLDER"
+cp -r ../user "$FOLDER"
 
 cd "$FOLDER" || exit
 rm dragontime fingerprint DEVICE MAC_AP MAC_USER find_matches.py

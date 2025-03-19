@@ -35,7 +35,7 @@ After getting 50-100 measurements, stop dragontime with CTRL+C.
 
 To generate fingerprints for passwords, run:
 ```
-./fingerprint ../passwords.txt out.csv
+./fingerprint passwords.txt out.csv
 ```
 The fingerprints will be saved to out.csv. 
 

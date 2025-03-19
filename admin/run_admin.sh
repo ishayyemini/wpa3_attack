@@ -3,7 +3,7 @@
 DEVICE="${1:-wlan0}"
 DEF_CONFIG_FILE="hostapd_default.conf"
 CURR_CONFIG_FILE="hostapd_current.conf"
-PASSWORDS_FILE="../passwords.txt"
+PASSWORDS_FILE="passwords.txt"
 
 # Randomizes password
 cp "$DEF_CONFIG_FILE" "$CURR_CONFIG_FILE"
