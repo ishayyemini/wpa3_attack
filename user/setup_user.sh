@@ -1,12 +1,6 @@
 #!/bin/sh
 
-MAC_AP="$1"
-DEVICE="${2:-wlan0}"
-
-if [ -z ${1+x} ]; then
-  echo "Access point MAC must be provided"
-  exit 1
-fi
+DEVICE="${1:-wlan0}"
 
 # Ensures requirements are installed
 sudo apt-get update
@@ -14,7 +8,6 @@ sudo apt-get install -y autoconf automake libtool shtool libssl-dev pkg-config l
 pip install -r requirements.txt
 
 # Inputs MACs
-echo "$MAC_AP" > MAC_AP
 echo "$DEVICE" > DEVICE
 MAC_USER=$(ip link show "$DEVICE" | grep link/ether | awk '{print $2}')
 echo "$MAC_USER" > MAC_USER
