@@ -8,7 +8,7 @@
 \begin_preamble
 \settopmatter{authorsperrow=5}
 \end_preamble
-\options sigconf,nonacm
+\options sigconf,nonacm,balance=False
 \use_default_options false
 \maintain_unincluded_children no
 \language english
@@ -197,29 +197,28 @@ country{}
 \end_layout
 
 \begin_layout Abstract
-Lorem ipsum odor amet,
- consectetuer adipiscing elit.
- Magnis turpis non consectetur molestie auctor.
- Litora dui vel integer vivamus sapien porttitor morbi.
- Id quam interdum efficitur vitae lectus porttitor mollis viverra condimentum.
- Risus primis rhoncus scelerisque dapibus vitae parturient sagittis torquent varius.
- Scelerisque pellentesque dignissim facilisi tincidunt cras torquent tristique eros.
- Arcu metus fames fames viverra praesent iaculis varius?
- Cursus suscipit inceptos luctus sociosqu senectus netus ante dictum.
- 
+We consider a known problem in Wi-Fi and communications over the internet in general,
+ come up with a way to improve the public’s knowledge and educate them,
+ demonstrate the problem and implement the attack.
 \end_layout
 
 \begin_layout Abstract
-Lorem ipsum odor amet,
- consectetuer adipiscing elit.
- Magnis turpis non consectetur molestie auctor.
- Litora dui vel integer vivamus sapien porttitor morbi.
- Id quam interdum efficitur vitae lectus porttitor mollis viverra condimentum.
- Risus primis rhoncus scelerisque dapibus vitae parturient sagittis torquent varius.
- Scelerisque pellentesque dignissim facilisi tincidunt cras torquent tristique eros.
- Arcu metus fames fames viverra praesent iaculis varius?
- Cursus suscipit inceptos luctus sociosqu senectus netus ante dictum.
- 
+Wi-Fi allows devices to communicate easily,
+ and is supposed to be protected by WPA certificates.
+ However,
+ in this paper we show that even the code meant to protect our privacy can be circumvented,
+ and that caution should always be taken.
+ We implement the attack used to exploit a weakness in WPA3 and show how security isn’t universal,
+ but case-specific.
+ Additionally,
+ we thoroughly explain how and why the attack itself works and is used.
+ We also build a CTF with detailed instructions to allow people from various backgrounds to interact with the code.
+ Finally,
+ we believe that our work shows the need for consistent auditing of cyber-security protocols,
+ for the constant public scrutinization of said protocols,
+ and allows for the CTF players to gain some knowledge about the field
+\backslash
+specific exploit.
 \end_layout
 
 \begin_layout Section
@@ -227,63 +226,122 @@ Introduction
 \end_layout
 
 \begin_layout Standard
-Lorem ipsum odor amet,
- consectetuer adipiscing elit.
- Magnis turpis non consectetur molestie auctor.
- Litora dui vel integer vivamus sapien porttitor morbi.
- Id quam interdum efficitur vitae lectus porttitor mollis viverra condimentum.
- Risus primis rhoncus scelerisque dapibus vitae parturient sagittis torquent varius.
- Scelerisque pellentesque dignissim facilisi tincidunt cras torquent tristique eros.
- Arcu metus fames fames viverra praesent iaculis varius?
- Cursus suscipit inceptos luctus sociosqu senectus netus ante dictum.
+We use Wi-Fi in almost every place we go.
+ At work,
+ in our home,
+ at the mall,
+ and in some cases even while outside on a walk.
+ But first,
+ what even is Wi-Fi?
+ Wi-Fi is a facility allowing computers,
+ smartphones,
+ or other devices to connect to the internet or communicate with one another wirelessly within a particular area.[oxford dictionary] In more understandable terms,
+ Wi-Fi is a family of protocols,
+ upon which wireless communication is based.
+ These protocols are the way two or more devices communicate and exchange data using radio waves.
+ This allows us to connect to the internet,
+ it all of its vastness.
+ Thanks to Wi-Fi,
+ we have the ability to “doomscroll” in our favourite social networks,
+ and watch cute cat videos,
+ whilst not having to be tethered to some clunky and cumbersome cable network.
+ 
 \end_layout
 
 \begin_layout Standard
-Consequat dictumst a tristique potenti iaculis malesuada accumsan cursus sed.
- Tortor adipiscing adipiscing nullam himenaeos finibus cras.
- Netus diam dolor litora et vel himenaeos.
- Libero magna venenatis posuere tortor molestie feugiat consectetur.
- Tincidunt non elementum pretium habitant torquent risus nostra.
- Donec nec velit metus ligula donec.
- Duis sollicitudin habitasse volutpat ac himenaeos odio urna.
- Nullam aliquam integer curabitur blandit facilisis nascetur.
- Laoreet ultricies donec himenaeos dui aptent.
+Now,
+ we get to a pressing matter that comes with the use of Wi-Fi:
+ security concerns.
+ Obviously,
+ most people would not mind if it is publicly known that they watch cat videos(unless their partner is an avid dog person of course),
+ so let’s give a much more disturbing example that affects all of us.
 \end_layout
 
 \begin_layout Standard
-Mattis ad faucibus eros senectus pulvinar et potenti.
- Semper rhoncus odio ac condimentum,
- placerat litora nunc.
- Taciti adipiscing nulla litora primis orci faucibus morbi vehicula.
- Venenatis proin nibh convallis eget fringilla placerat.
- Placerat tristique lacinia nascetur auctor porta vestibulum ac maecenas.
- Magnis eros hendrerit in praesent condimentum ornare.
- Nunc tincidunt dapibus quis viverra feugiat pharetra magna.
- Fringilla iaculis mollis conubia sociosqu montes accumsan nisl erat id?
- Amet at dapibus augue ornare scelerisque elit?
+Let’s consider two parties,
+ Alice and Bob.
+ Alice wants to share some extremely secret information with Bob.
+ Bank account details,
+ company secrets worth billions of dollars,
+ nuclear or government secrets,
+ or any explicit information about either party that could cause harm being public.
+ Alice,
+ in the comfort of her own home,
+ would like to send Bob the information over the internet,
+ as they live in different countries.
+ So,
+ Alice connects to her home Wi-Fi network,
+ and using strong encryption,
+ sends the secret message to Bob.
+ However,
+ unbeknownst to the duo,
+ our antagonist Eve is also there.
+ Let’s say that Eve has the power to gain access to the Wi-Fi network,
+ and manages to create a Man-In-The-Middle attack(or any other attack) and steals the information.
+ This is a cause for worry,
+ especially since these situations can happen every day.
 \end_layout
 
 \begin_layout Standard
-Vitae magnis lectus elit consequat non aptent lacinia.
- Senectus libero arcu sapien turpis ex tortor.
- Sollicitudin inceptos sed porta phasellus cursus facilisis.
- Nulla tempus facilisi dis orci mi cursus nisl.
- Porta cursus ut cursus ultricies lobortis diam cubilia.
- Felis sagittis blandit morbi imperdiet ultrices accumsan.
- Massa faucibus nisl volutpat egestas enim.
+That is the reason that we have the WPA’s - Wi-Fi Protected Access certificates [
+\begin_inset CommandInset citation
+LatexCommand keyonly
+key "1"
+literal "false"
+
+\end_inset
+
+].
+ These certificates,
+ which are given to devices that are up to standard,
+ are meant to ensure that the transfer of the information using the Wi-Fi protocols is done in a safe enough manner.
+ 
 \end_layout
 
 \begin_layout Standard
-Mus ut convallis fusce magnis consectetur.
- Cubilia gravida magna bibendum cubilia tincidunt aenean ac.
- Magnis nulla sodales vitae volutpat fusce.
- Ultricies conubia mi inceptos laoreet blandit.
- Sagittis viverra cras adipiscing metus integer nunc curabitur integer.
- Congue montes auctor rutrum eros praesent eu.
- Dolor massa finibus lobortis sit odio posuere tempus.
- Justo euismod ridiculus per dignissim ridiculus laoreet rutrum turpis.
- Ornare efficitur suspendisse at massa,
- mollis nascetur aptent ultrices.
+The WPA3 certificate,
+ which was released by the Wi-Fi alliance as the successor to WPA2,
+ is one such certification,
+ developed to secure wireless computer networks.
+ WPA3 was proposed after some serious concerns and vulnerabilities arose regarding WPA2,
+ the previous certificate proposed by the Wi-Fi alliance.
+ If we simplify things down a bit,
+ the WPA3 certificate mandates support of the Dragonfly handshake protocol,
+ and only adds a transition mode(backwards compatibility with WPA2).
+\end_layout
+
+\begin_layout Standard
+Since the security of WPA3 is mostly reliant on the Dragonfly handshake,
+ we should expect it to be pretty secure(in theory and in practice).
+ Some variant of the Dragonfly has been formally proven to be secure [
+\begin_inset CommandInset citation
+LatexCommand keyonly
+key "2"
+literal "false"
+
+\end_inset
+
+],
+ so we shall see to the practicing side of things.
+\end_layout
+
+\begin_layout Standard
+In our project,
+ we used open source code to manipulate formerly discovered(now patched) vulnerabilities in WPA3,
+ and thus managed to gain access to a wireless network using the unpatched code and certificate version.
+ We created a CTF around said vulnerabilities for a few reasons.
+ First,
+ we wanted to highlight the need for certificates that ensure the safe and secure usage of wireless networks,
+ and the need to constantly monitor and fix vulnerabilities in them,
+ for the privacy and security of all users.
+ Second,
+ we wanted to show how sloppy implementations,
+ even of theoretically secure protocols,
+ can sometimes have disastrous consequences.
+ Last but not least,
+ we want to allow people,
+ from interested newbies to more experienced coders to gain hands-on experience in said vulnerability,
+ and through that understand it more thoroughly than before.
 \end_layout
 
 \begin_layout Section
@@ -291,51 +349,42 @@ Related Work
 \end_layout
 
 \begin_layout Standard
-Nostra sit dolor tellus netus litora.
- Nisl lectus semper arcu rutrum tempus ultrices.
- Et quisque volutpat amet class curae tellus.
- Sem aenean sit curabitur quis et accumsan dapibus.
- Torquent finibus morbi maecenas sollicitudin platea aliquet.
- Molestie vel tristique urna lacinia himenaeos montes curae gravida.
+During the process of our project,
+ we used several open resources.
+ The basis for the attack itself comes from “Dragonblood:
+ Analyzing the Dragonfly Handshake of WPA3 and EAP-pwd“ [
+\begin_inset CommandInset citation
+LatexCommand keyonly
+key "3"
+literal "false"
+
+\end_inset
+
+],
+ which is the primary paper.
+ The paper describes the attack and the code for both simulating a WP3 network,
+ and making repeated fraudulent logins to measure response time.
+ Using the paper as the how-to for the implementation of the attack,
+ we modified some of the code published by the writers,
+ adapting it for our use case.
+ 
 \end_layout
 
 \begin_layout Standard
-Inceptos integer tristique leo class suspendisse adipiscing.
- Consequat laoreet facilisis sollicitudin cubilia quis condimentum vivamus.
- Venenatis cubilia felis est et accumsan sed.
- Senectus et rutrum mattis praesent sit,
- integer augue rhoncus nisi.
- Ut litora magnis dis purus curabitur magnis.
- Potenti blandit a rhoncus leo nascetur.
- Nostra lectus molestie ipsum nulla tempor penatibus nostra odio?
- Mattis vulputate amet feugiat ac et maecenas fames.
- Curae id ultrices laoreet tortor,
- volutpat cras risus nisi.
- Odio cursus lectus ultricies dignissim ex placerat curabitur at feugiat.
-\end_layout
+Additionally,
+ during the implementation of our attack,
+ we used “Opportunities and Limits of Remote Timing Attacks“ [
+\begin_inset CommandInset citation
+LatexCommand keyonly
+key "4"
+literal "false"
 
-\begin_layout Standard
-Morbi et habitant tempor;
- lorem senectus justo facilisis!
- Hac scelerisque morbi fermentum orci facilisis eget sed venenatis.
- Ipsum tortor dictum conubia duis tellus neque sapien.
- Cras ornare neque erat proin felis varius mollis.
- Placerat mus magna gravida;
- ad sociosqu condimentum ligula.
- Tincidunt dignissim nisl justo laoreet fermentum taciti.
- Hac senectus facilisi hendrerit metus ut enim facilisis nulla.
- Vehicula ligula risus libero adipiscing,
- quam parturient egestas arcu.
- Odio aliquet etiam ultrices egestas non ullamcorper.
-\end_layout
+\end_inset
 
-\begin_layout Standard
-Habitasse velit finibus quisque conubia risus est.
- Malesuada urna eleifend curae cursus volutpat conubia potenti elementum.
- In lorem aptent conubia aliquet nascetur sagittis hac nec.
- Id erat posuere natoque ridiculus potenti litora maximus.
- Nulla laoreet feugiat felis cursus sodales rhoncus eleifend.
- Facilisis hac elementum mi eget class lectus viverra neque nam.
+],
+ a paper that describes a statistical “Box Test”.
+ Using that test,
+ we are able to distinguish between different distributions based on the timing samples collected by running the code published by the first article’s writers.
 \end_layout
 
 \begin_layout Section
@@ -343,40 +392,288 @@ Attack Description
 \end_layout
 
 \begin_layout Standard
-Velit fermentum interdum molestie dictum porta dolor conubia.
- Ligula vestibulum euismod eget cras ipsum malesuada.
- Convallis eu aliquam conubia ipsum ante amet.
- Sollicitudin dui libero fames,
- feugiat suspendisse platea posuere.
- Dictum massa platea efficitur nullam sagittis curae ullamcorper sed.
- Ipsum tincidunt a parturient quisque porta.
- Sociosqu ligula ad vulputate faucibus ac consectetur.
- Purus ac dis montes condimentum odio.
+In our CTF,
+ we implement a side-channel attack on the Dragonfly handshake protocol.
+ 
 \end_layout
 
 \begin_layout Standard
-Aliquet maximus fames purus dictum aenean bibendum conubia finibus.
- Lacinia nostra praesent senectus;
- rhoncus blandit massa.
- Praesent amet vulputate nam eleifend etiam leo.
- Inceptos leo mus imperdiet integer diam donec duis quisque donec.
- Euismod eleifend hendrerit platea ultricies porttitor elit.
- Quis eget penatibus facilisis senectus non viverra aliquam mauris.
+The Dragonfly handshake protocol is a Password Authenticated Key Exchange.
+ Used in WPA3,
+ this protocol transforms(hashes) the password into a pseudo-random element of some finite group.
+ The groups are either a finite field,
+ or an elliptic curve over a finite field.
 \end_layout
 
 \begin_layout Standard
-Egestas hendrerit donec mus pretium eleifend.
- Nec sodales leo aenean odio senectus parturient.
- Laoreet faucibus consectetur hac mus facilisis pretium,
- finibus pulvinar porta.
- Porttitor rhoncus aliquet quis auctor porta class lacinia laoreet rutrum.
- Consequat sollicitudin purus eleifend ut senectus condimentum lacinia.
- Eleifend faucibus eros tristique cubilia dignissim dui curabitur massa.
- Cursus vehicula torquent molestie;
- efficitur nisi tellus in platea.
- Dapibus montes sem ultrices;
- per enim efficitur ipsum.
- Bibendum arcu potenti magnis quisque vehicula leo venenatis gravida.
+Particularly,
+ after party A first sends its element,
+ party B must transform its own password to check if party A has sent the correct password.
+ Afterwards,
+ it will almost always reply,
+ either accepting the input from A if it is identical to its own hash,
+ or rejecting otherwise.
+\end_layout
+
+\begin_layout Standard
+In the case of finite fields,
+ Dragonfly transforms the password into an element of a prime group.
+ To do this,
+ it uses the sha256 hash function,
+ which is very slow.
+ The function outputs a pseudorandom uniformly distributed whole number in the interval 
+\begin_inset Formula $[0,2^{n}]$
+\end_inset
+
+,
+ where 
+\begin_inset Formula $2^{n}$
+\end_inset
+
+ is the smallest integer larger than the prime 
+\begin_inset Formula $n=⌈\log_{2}P⌉$
+\end_inset
+
+.
+ Since the number must be smaller than 
+\begin_inset Formula $P$
+\end_inset
+
+,
+ if we did not succeed in getting such a number in the first try,
+ the protocol will repeat the hash function until it finds a suitable value.
+\end_layout
+
+\begin_layout Standard
+It is important to note that the hash function is deterministic.
+ This means that its output depends entirely on the password,
+ the MAC addresses of the access point and the client’s,
+ and the number of attempts at finding a valid number(add hash to curve code from paper here).
+\end_layout
+
+\begin_layout Standard
+The chance of the number being smaller than 
+\begin_inset Formula $P$
+\end_inset
+
+ is 
+\begin_inset Formula $\frac{\text{P}}{2^{n}}$
+\end_inset
+
+.
+ Since most of the safe primes used for finite field cryptography are slightly smaller than a power of 
+\begin_inset Formula $2$
+\end_inset
+
+,
+ we get that 
+\begin_inset Formula $\frac{\text{P}}{2^{n}}\approx1$
+\end_inset
+
+.
+ However,
+ for some of the primes,
+ particularly group 24 [
+\begin_inset CommandInset citation
+LatexCommand keyonly
+key "5"
+literal "false"
+
+\end_inset
+
+],
+ 
+\begin_inset Formula $\frac{\text{P}}{2^{n}}\approx0.47\sim\frac{1}{2}$
+\end_inset
+
+,
+ so multiple iterations are a regular occurrence.
+\end_layout
+
+\begin_layout Standard
+This process leaks information about the password,
+ since the long runtime reveals the number of iterations,
+ and given the set of MAC addresses we spoof,
+ only about 
+\begin_inset Formula $2^{-k}$
+\end_inset
+
+ of passwords perform 
+\begin_inset Formula $k$
+\end_inset
+
+ iterations.
+\end_layout
+
+\begin_layout Standard
+By repeatedly trying to start the protocol,
+ it’s possible to get a set of response times for each spoofed MAC address.
+ We do this to a number of addresses,
+ sending all of them to the device simultaneously,
+ which makes the influence of the noise on them equal.
+ It is then possible to compare the response times for the addresses,
+ and get a map of address-iterations that is unique to the correct password.
+ When comparing it to a dictionary of common passwords and their address-iteration maps(can be calculated in a deterministic manner),
+ it becomes much easier to derive the password.
+\end_layout
+
+\begin_layout Standard
+To derive iteration counts from timing measurements,
+ the original paper recommended using Crosby's Box Test.
+ In the test,
+ 2 random variables are compared by picking a range of quantiles 
+\begin_inset Formula $[low,high]$
+\end_inset
+
+,
+ and checking if the intervals of both variables intersect.
+ So,
+ given 2 random variables 
+\begin_inset Formula $X,Y$
+\end_inset
+
+ such that 
+\begin_inset Formula $F_{X},F_{Y}$
+\end_inset
+
+ are their empirical distribution functions,
+ 
+\begin_inset Formula $X,Y$
+\end_inset
+
+ are assumed to have the same distribution if:
+\begin_inset Formula 
+\[
+F_{X}^{-1}(low)\in\left[F_{Y}^{-1}(low),F_{Y}^{-1}(high)\right]
+\]
+
+\end_inset
+
+or
+\begin_inset Formula 
+\[
+F_{X}^{-1}(high)\in\left[F_{Y}^{-1}(low),F_{Y}^{-1}(high)\right]
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We have attempted several methods of implementing this test.
+ The difference between the methods is in the algorithm that decides which addresses give an equal iteration count.
+\end_layout
+
+\begin_layout Subsubsection*
+First algorithm
+\end_layout
+
+\begin_layout Enumerate
+Assign i = 1
+\end_layout
+
+\begin_layout Enumerate
+Find the address with the minimal low quantile that hasn’t been assigned yet,
+ i.e smallest value which has not yet been assigned to some number of iterations j.
+\end_layout
+
+\begin_layout Enumerate
+Assign all addresses with intersecting intervals as having i=1 iteration.
+\end_layout
+
+\begin_layout Enumerate
+Assign i←i+1.
+\end_layout
+
+\begin_layout Enumerate
+Repeat from 2 until all addresses have been assigned.
+\end_layout
+
+\begin_layout Standard
+This algorithm works the best when low and high are chosen in the least noisy part of the data,
+ and fails when there is too much noise.
+\end_layout
+
+\begin_layout Subsubsection*
+Second algorithm
+\end_layout
+
+\begin_layout Standard
+Similar to the first algorithm.
+ But here,
+ instead of finding intervals that intersect only the minimal address,
+ we find all addresses that intersect the set i.
+\begin_inset Newline newline
+\end_inset
+
+This algorithm works the best when [low,
+ high] are in an interval with large distances between different iteration counts,
+ but is otherwise often worse than algorithm 1.
+\end_layout
+
+\begin_layout Subsubsection*
+Third algorithm
+\end_layout
+
+\begin_layout Standard
+While telling different quantile graphs 
+\begin_inset Formula $F_{X}^{-1},F_{Y}^{-1}$
+\end_inset
+
+ apart is easy by eye,
+ Crosby's Box Test only looks at 2 points which can be inconsistent.
+ Therefore,
+ the final algorithm is a clustering algorithm that looks at most of the quantile graph of each address.
+ 
+\end_layout
+
+\begin_layout Standard
+The algorithm is a version of agglomerative clustering with ward linkage and a distance threshold that receives quantile graphs as vectors(excluding the highest and lowest quantiles because their variance is too high).
+\end_layout
+
+\begin_layout Standard
+This algorithm fails when addresses with equal iterations are farther apart than the threshold,
+ or different iteration clusters are closer than it,
+ but generally it outperforms the previous algorithms,
+ although picking the right threshold can be harder from just looking at the quantile graph.
+\end_layout
+
+\begin_layout Standard
+After sorting the addresses into different iteration sets,
+ we estimate the iteration time by assuming we measured the sets of addresses with 1,2,3 iterations were measured correctly(meaning the assignment of iterations is correct).
+ In the first algorithm,
+ we calculate the expected value of an iteration given our sample space.
+ In the third algorithm,
+ we average the distance between them,
+ and estimate the number of iterations of the other clusters relative to it.
+\end_layout
+
+\begin_layout Subsubsection*
+Final desicion
+\end_layout
+
+\begin_layout Standard
+We chose to work with the first algorithm,
+ since it worked best in most use cases,
+ and since we didn’t mind giving low and high values in less noisy parts of the data(as done in the paper).
+\end_layout
+
+\begin_layout Standard
+For testing the iteration approximating process,
+ we have a program for plotting the quantile graphs.
+ This makes it easy to tell different iteration counts by eye,
+ and checking why an algorithm isn’t working.
+\end_layout
+
+\begin_layout Standard
+After calculating the length of one iteration,
+ recall we assume our address set for one iteration is correct.
+ This means that we can calculate the leftover for all other addresses not in the set by subtracting the time for one iteration with noise from the time of the other addresses,
+ and then dividing by the time it takes for one iteration.
+ This gives us a better approximation of the number of iterations.
+ From here,
+ it is quite easy to go over the passwords file and check which fingerprint is closest to the measured iterations vector and return it.
 \end_layout
 
 \begin_layout Section
@@ -384,29 +681,89 @@ Design
 \end_layout
 
 \begin_layout Standard
-Rutrum vivamus convallis arcu eget mattis.
- Fringilla nascetur eros imperdiet rutrum nascetur dignissim scelerisque aptent.
- Pellentesque curabitur nunc dapibus mi curabitur lectus vulputate.
- Fermentum hendrerit posuere placerat praesent ipsum fringilla aliquam convallis ante.
- Rhoncus curae venenatis maximus hendrerit parturient ligula fringilla mi augue.
- Et congue posuere morbi per augue mauris sociosqu.
- Nibh litora torquent fringilla pulvinar interdum tristique elementum.
- Maecenas phasellus venenatis augue litora amet magnis ipsum donec enim.
- Nec accumsan urna rhoncus ridiculus morbi elit.
- Volutpat iaculis conubia iaculis mus a posuere sagittis.
+Our CTF challenge consists of filling in missing functions according to text instructions.
+ To implement the attack,
+ we modified the code for simulating WPA3 networks to make it vulnerable,
+ and the original attack code used in the Dragonblood paper [
+\begin_inset CommandInset citation
+LatexCommand keyonly
+key "3"
+literal "false"
+
+\end_inset
+
+].
 \end_layout
 
 \begin_layout Standard
-Quam eros et porttitor sollicitudin quisque condimentum non est sit.
- Aptent ornare risus ad erat pretium quam.
- Nascetur faucibus dis lorem faucibus metus;
- at rhoncus.
- Posuere inceptos montes est facilisi euismod elit.
- Vehicula magnis mi porta rutrum;
- vivamus magnis fusce nullam.
- Phasellus scelerisque integer mollis curae id mollis facilisi aliquam.
- Dolor lacinia sollicitudin platea habitant consectetur.
- Senectus integer sagittis penatibus adipiscing malesuada lectus.
+The programs include:
+\end_layout
+
+\begin_layout Itemize
+fingerprint.c - program for turning a list of passwords into a csv file with their address-iteration count fingerprints.
+\end_layout
+
+\begin_layout Itemize
+dragontime.c - program for performing fraudulent logins and recording response time.
+\end_layout
+
+\begin_layout Itemize
+datareader.py - program for analyzing timing measurements.
+\end_layout
+
+\begin_layout Itemize
+find_matches.py - program for finding the closest matches of a passwords fingerprint in a csv file of prints.
+\end_layout
+
+\begin_layout Standard
+We have multiple levels for the CTF:
+ 
+\end_layout
+
+\begin_layout Enumerate
+The easiest level,
+ the players need to complete missing functions in datareader.
+\end_layout
+
+\begin_layout Enumerate
+The medium level,
+ they need also to implement the dictionary creation,
+ as well as searching the dictionary for the right fit,
+ and more missing code in datareader.py.
+\end_layout
+
+\begin_layout Enumerate
+The hardest level,
+ players will need to complete more of datareader.py,
+ as well as parts of dragontime.c and more work for fingerprint.c,
+ and they will need to find themselves how to get the iteration count from sae_derive_ffc.
+\end_layout
+
+\begin_layout Standard
+We’ve used several Python libraries for analysing the data:
+\end_layout
+
+\begin_layout Itemize
+numpy and pandas,
+ for manipulating the timing information.
+\end_layout
+
+\begin_layout Itemize
+matplotlib.pyplot for visualizing the timing information.
+\end_layout
+
+\begin_layout Itemize
+sklearn.cluster for its Agglomerative Clustering implementation,
+ for analyzing the timing information.
+\end_layout
+
+\begin_layout Itemize
+csv for reading the password fingerprints.
+\end_layout
+
+\begin_layout Itemize
+scipy.spatial for its k-d Tree implementation,
+ for analysing the password fingerprints.
 \end_layout
 
 \begin_layout Section
@@ -414,43 +771,150 @@ CTF Instructions
 \end_layout
 
 \begin_layout Standard
-Nam consectetur nullam finibus posuere montes ex nibh turpis.
- Hac non ligula fringilla per torquent posuere natoque magnis quis.
- Himenaeos scelerisque varius lobortis sollicitudin quisque sem.
- Amet arcu posuere ultricies vitae finibus sagittis erat.
- Egestas imperdiet dignissim platea;
- lacus netus nunc felis dapibus.
- Dapibus eleifend eleifend libero convallis ridiculus habitasse commodo.
- Ante malesuada accumsan fames turpis amet litora.
- Nullam pellentesque parturient cubilia bibendum inceptos,
- quam sagittis.
+First,
+ make sure that both computers are running linux(we ran the CTF on kali).
+\end_layout
+
+\begin_layout Subsection*
+Admins
 \end_layout
 
 \begin_layout Standard
-Nibh cubilia aliquam urna euismod est luctus sit primis in.
- Donec fringilla dolor lobortis mattis imperdiet a.
- Natoque rhoncus conubia aliquet;
- bibendum ultricies curabitur.
- Sit dolor faucibus amet himenaeos himenaeos lacinia sollicitudin.
- Curae laoreet sagittis imperdiet mattis bibendum,
- integer ex curae vulputate.
- Sagittis posuere diam turpis,
- nisl diam ullamcorper convallis.
- Lectus semper urna mus elementum ultricies nostra mattis augue.
+Setup:
+ open the terminal,
+ cd into the admin directory,
+ and run:
 \end_layout
 
 \begin_layout Standard
-Magna per ad fusce dignissim sagittis in neque sit.
- Orci magna augue faucibus curabitur curae interdum.
- Ligula pharetra inceptos mauris curae venenatis libero elementum.
- Integer proin auctor dictumst praesent lorem lorem nostra potenti.
- Interdum vel lacinia in consequat;
- accumsan nulla aliquet massa.
- Mauris porttitor lectus nullam dignissim sagittis semper.
- Augue rhoncus aliquam;
- tempus lectus urna suspendisse.
- Lorem sed cursus primis vivamus laoreet felis aenean neque.
- Nisl habitasse aliquam convallis sodales felis curae sit.
+sh setup_admin.sh
+\begin_inset Newline newline
+\end_inset
+
+After the initial setup,
+ there is usually no need to rerun the setup.
+\begin_inset Newline newline
+\end_inset
+
+To start the CTFd,
+ run:
+\end_layout
+
+\begin_layout Standard
+sh run_ctfd.sh 1 wlan0
+\begin_inset Newline newline
+\end_inset
+
+Replace “1” with the desired level(1,
+ 2,
+ or 3,
+ from hardest to easiest) and “wlan0” with the Wi-Fi adapter of your choice.
+\begin_inset Newline newline
+\end_inset
+
+After running run_ctfd.sh,
+ you can start the AP by running:
+\end_layout
+
+\begin_layout Standard
+sh run_hostapd.sh
+\end_layout
+
+\begin_layout Subsection*
+Players
+\end_layout
+
+\begin_layout Standard
+For the users,
+ tell them to enter the website that runs the CTFd (http://[your IP address]:4000).
+ There are three user guides,
+ relevant to each level.
+ 
+\end_layout
+
+\begin_layout Standard
+Possible hints to give to players:
+\end_layout
+
+\begin_layout Subsection*
+datareader.py (level 1):
+\end_layout
+
+\begin_layout Itemize
+Try to think how to mark that an address has an assigned iteration number,
+ and how to choose the smallest low quantile value filtering upon the unassigned addresses.
+\end_layout
+
+\begin_layout Itemize
+Remember how to calculate interval intersection.
+ Maybe draw some intervals,
+ and see what necessitates their intersection.
+\end_layout
+
+\begin_layout Itemize
+Recall how to calculate sum
+\backslash
+average on a specific subset of a dataframe.
+\end_layout
+
+\begin_layout Itemize
+Remember we can update all addresses with the same minimal bound all at one.
+\end_layout
+
+\begin_layout Itemize
+The average of the times taken has an added Y for every address average.
+ We need to remove that somehow using time_1,
+ to get the estimated actual time for the rest of the iterations.
+\end_layout
+
+\begin_layout Subsection*
+datareader.py (level 2):
+\end_layout
+
+\begin_layout Itemize
+Estimate time for iterations using expected value on the sample space of minimal assigned iterations 1,
+ 2 and 3.
+\end_layout
+
+\begin_layout Itemize
+What is needed to initialize the iteration estimation?
+\end_layout
+
+\begin_layout Subsection*
+find_matches.py (level 2):
+\end_layout
+
+\begin_layout Itemize
+Think how to create the k-d tree,
+ and how to get the password with the closest fingerprint to the fingerprint we have.
+\end_layout
+
+\begin_layout Subsection*
+dragontime.c(level 3):
+\end_layout
+
+\begin_layout Itemize
+Think how to calculate the time for the measurement using the last time(how much time has passed since).
+\end_layout
+
+\begin_layout Itemize
+How do we deauth?
+ Look for functions that can help us,
+ and remember the condition to actually deauth.
+\end_layout
+
+\begin_layout Itemize
+Look for functions to open the card,
+ set rate and get the MAC address.
+\end_layout
+
+\begin_layout Itemize
+How do we create a timer?
+ How do we initialize its periodic and initial expiration?
+\end_layout
+
+\begin_layout Itemize
+Recall how to commit new commit and inject it(look for useful functions)
 \end_layout
 
 \begin_layout Section
@@ -458,75 +922,180 @@ Conclusion
 \end_layout
 
 \begin_layout Standard
-Id aliquet vulputate nostra felis viverra inceptos.
- Fames risus mi cursus diam aptent interdum.
- Netus interdum integer interdum metus in facilisi dignissim et.
- Suscipit elit hac at erat;
- euismod dignissim nibh lacus.
- Penatibus penatibus platea taciti neque est cras montes in.
- Himenaeos ornare pulvinar tempor gravida ullamcorper euismod cras lectus tempor.
- Duis senectus curabitur congue;
- varius magnis metus.
- Velit ipsum condimentum laoreet risus phasellus placerat elementum nibh.
- Porttitor mauris hendrerit dis penatibus porttitor eget phasellus porta.
- Lacus sociosqu habitasse per et nulla phasellus a montes parturient.
+In this paper,
+ we demonstrated the vulnerabilities in WPA3 by implementing a side-channel attack on the Dragonfly handshake protocol.
+ Our work highlights the risks posed by improper implementations of cryptographic protocols and emphasizes the need for continuous security auditing.
+ Through our CTF challenge,
+ we aimed to educate players about these vulnerabilities,
+ and provide hands-on experience with analyzing and exploiting security flaws.
 \end_layout
 
 \begin_layout Standard
-Sociosqu donec ullamcorper taciti at suscipit quisque facilisis.
- Auctor iaculis penatibus faucibus ornare euismod enim.
- Eleifend nisi et litora aptent vitae.
- Morbi vulputate dui netus eleifend per sapien quam.
- Cursus quam in tempus proin erat sollicitudin.
- Quis facilisi ad placerat aenean sollicitudin dictum nascetur nullam.
- Augue curabitur vivamus posuere natoque lectus;
- mi ac nam ex.
- Litora fames dapibus eget mauris montes ut suspendisse himenaeos.
- Orci ligula morbi dis semper litora molestie lorem.
+Our findings reinforce the importance of rigorous scrutiny in cybersecurity standards and the necessity of consistently updating protocols to mitigate newly discovered threats.
+ Although WPA3 was designed to address the weaknesses of its predecessor,
+ our research shows that even secure protocols can be compromised if not implemented correctly.
+ This underscores the critical role of responsible disclosure and security awareness in maintaining the integrity of wireless communications.
+\end_layout
+
+\begin_layout Standard
+Future research should focus on refining detection mechanisms for timing-based attacks,
+ while also exploring alternative authentication protocols that are less susceptible to such vulnerabilities.
+ By having an ongoing dialogue about Wi-Fi security,
+ we can help drive improvements in wireless security standards and protect users from potential cyber threats.
 \end_layout
 
 \begin_layout Section*
 Contributions
 \end_layout
 
+\begin_layout Subsubsection*
+Ariel
+\end_layout
+
 \begin_layout Standard
-Per et mi maecenas commodo consequat magna elementum fames.
- Felis aenean orci venenatis nisl blandit.
- Non accumsan arcu tristique elit ex parturient vulputate neque.
- Justo dui hac praesent fermentum lobortis;
- euismod penatibus luctus.
- Cras inceptos suscipit ridiculus porta dignissim orci.
- Porta quam ac nulla elementum sociosqu accumsan potenti est?
+Helped Isolating the dragontime attack from the dragondrain-and-time repository.
+ Wrote most of the Technical Report.
+ Tested the running of the CTF and the attack on multiple computers.
+ Wrote find_matches.py.
+\end_layout
+
+\begin_layout Subsubsection*
+Asaf
+\end_layout
+
+\begin_layout Standard
+Helped setting up the attack framework.
+ 
+\end_layout
+
+\begin_layout Subsubsection*
+Tal
+\end_layout
+
+\begin_layout Standard
+Helped setting up the attack framework.
+ Worked on datareader.py and fingerprint.c,
+ and integrated them as part of the CTF.
+ Wrote the User Guide.
+\end_layout
+
+\begin_layout Subsubsection*
+Shmuel
+\end_layout
+
+\begin_layout Standard
+Helped setting up the attack framework.
+ Worked on datareader.py and fingerprint.c.
+ Contributed to the Technical Report,
+ User Guide,
+ and the Presentation.
+\end_layout
+
+\begin_layout Subsubsection*
+Ishay
+\end_layout
+
+\begin_layout Standard
+Wrote scripts to automate the CTF deployment.
+ Isolated the dragontime attack from the dragondrain-and-time repository.
+ Tested the running of the CTF and the attack on multiple computers.
+ Contributed to the Presentation.
+ Reformatted the Technical Report into Latex.
+ Configured the CTFd framework.
+ 
 \end_layout
 
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-key "key-2"
+label "Wikipedia(2025)"
+key "1"
+literal "false"
 
 \end_inset
 
-bfbobo
+Wikipedia,
+ 
+\begin_inset CommandInset href
+LatexCommand href
+target "https://en.wikipedia.org/wiki/Wi-Fi_Protected_Access"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-key "key-3"
+label "Lancrenon and Škrobot(2015)"
+key "2"
+literal "false"
 
 \end_inset
 
-bvcobvcfd
+Jean Lancrenon and Marjan Škrobot.
+ 2015.
+ On the Provable Security of the Dragonfly Protocol.
+ In Information Security.
+ Springer International Publishing.
 \end_layout
 
 \begin_layout Bibliography
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-key "key-4"
+label "Vanhoef and Eyal(2020)"
+key "3"
+literal "false"
 
 \end_inset
 
-ogfdfg
+Mathy Vanhoef and Eyal Ronen.
+ "Dragonblood:
+ Analyzing the Dragonfly Handshake of WPA3 and EAP-pwd." 2020 IEEE Symposium on Security and Privacy (SP).
+ IEEE,
+ 2020.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Crosby, Wallach and Riedi(2009)"
+key "4"
+literal "false"
+
+\end_inset
+
+Scott A.
+ Crosby,
+ Dan S.
+ Wallach,
+ and Rudolf H.
+ Riedi.
+ "Opportunities and limits of remote timing attacks." ACM Transactions on Information and System Security (TISSEC) 12.3 (2009):
+ 1-29.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "Lepinski and Kent(2008)"
+key "5"
+literal "false"
+
+\end_inset
+
+Matt Lepinski and Stephen Kent,
+ RFC 5114 section 2.3,
+ (2008) 
+\begin_inset CommandInset href
+LatexCommand href
+name "datatracker.ietf.org/doc/html/rfc5114#section-2.3"
+literal "false"
+
+\end_inset
+
+.
 \end_layout
 
 \end_body
