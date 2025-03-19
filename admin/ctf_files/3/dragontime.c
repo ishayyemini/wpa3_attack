@@ -282,7 +282,6 @@ static void event_loop(struct state *state, char *dev) {
 		if (fds[0].revents & POLLIN)
 			card_receive(state);
 
-		// TODO - do we really need timeout?
 		// This timer is periodically called, detects timeouts, and implicity starts the attack
 		if (fds[1].revents & POLLIN) {
 			uint64_t exp;

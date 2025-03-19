@@ -96,26 +96,21 @@ int main(int argc, char *argv[]) {
     struct sae_data *my_sae = calloc(1, sizeof(struct sae_data));
     my_sae->tmp = my_tmp;
 
-    // 6. For each password from the dictionary:
-    //    Generate a fingerprint, consisting of the iterations amount of sae_derive_pwe_ffc (stored in "counter")
-    //    for each MAC address
-
     if (pas_fd == NULL) {
         fprintf(stderr, "Unable to open password file!\n");
         exit(1);
     }
-
-    
     char password[256];
-    
 
+    // 6. For each password from the dictionary:
+    //    Generate a fingerprint, consisting of the iterations amount of sae_derive_pwe_ffc (stored in "counter")
+    //    for each MAC address
     while (fgets(password, sizeof(line), pas_fd)) {
         const int address_num = 20;
         password[strlen(line) - 1] = '\0';
         fprintf(out_fd, "%s,", password);
 
         for (int j = 0; j < address_num; j++) {
-
             /* TODO */
         }
 
@@ -123,7 +118,6 @@ int main(int argc, char *argv[]) {
 
         fflush(stdout);
     }
-
 
     fclose(pas_fd);
     fclose(out_fd);

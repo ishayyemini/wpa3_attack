@@ -127,6 +127,5 @@ int main(int argc, char *argv[]) {
     fclose(pas_fd);
     fclose(out_fd);
 
-
     return 0;
 }
