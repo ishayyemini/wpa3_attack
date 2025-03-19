@@ -520,7 +520,7 @@ int sae_derive_pwe_ffc(struct sae_data *sae, const u8 *addr1,
 fail:
     crypto_bignum_deinit(pwe, 1);
     bin_clear_free(pwe_buf, prime_len * 2);
-	return sae->tmp->pwe_ffc ? 0 : -1;
+    return counter - 1;
 }
 
 
@@ -2309,3 +2309,4 @@ const char *sae_state_txt(enum sae_state state) {
     }
     return "?";
 }
+

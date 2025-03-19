@@ -3,7 +3,6 @@
 
 #include "fingerprint.h"
 
-// TODO from dh_groups.c
 static const u8 dh_group24_prime[] = {
     0x87, 0xA8, 0xE6, 0x1D, 0xB4, 0xB6, 0x66, 0x3C,
     0xFF, 0xBB, 0xD1, 0x9C, 0x65, 0x19, 0x59, 0x99,
@@ -39,7 +38,6 @@ static const u8 dh_group24_prime[] = {
     0xDB, 0x09, 0x4A, 0xE9, 0x1E, 0x1A, 0x15, 0x97
 };
 
-// TODO from dh_groups.c
 static const u8 dh_group24_order[] = {
     0x8C, 0xF8, 0x36, 0x42, 0xA7, 0x09, 0xA0, 0x97,
     0xB4, 0x47, 0x99, 0x76, 0x40, 0x12, 0x9D, 0xA2,
@@ -63,34 +61,44 @@ void parse_mac(char *filename, u8 ret_addr[6]) {
     }
 }
 
+// Process a list of passwords and generate a fingerprint for each of them
 int main(int argc, char *argv[]) {
     if (argc != 3) {
         exit(1);
     }
 
+    // 1. Open password dictionary and output csv
     FILE *pas_fd = fopen(argv[1], "r");
     FILE *out_fd = fopen(argv[2], "w");
 
+    // 2. Calculate two addresses
     u8 addr1[6] = {0, 0, 0, 0, 0, 0};
     parse_mac("MAC_AP", addr1);
     u8 addr2[6] = {0, 0, 0, 0, 0, 0};
     parse_mac("MAC_USER", addr2);
 
+    // 3. Define DH group, with prime, prime_len, order and order_len
     struct dh_group *my_dh_group = calloc(1, sizeof(struct dh_group));
     my_dh_group->prime = dh_group24_prime;
     my_dh_group->prime_len = 256;
     my_dh_group->order = dh_group24_order;
     my_dh_group->order_len = 32;
 
+    // 4. Define SAE temporary data, with prime_len, order, prime and dh
     struct sae_temporary_data *my_tmp = calloc(1, sizeof(struct sae_temporary_data));
-    my_tmp->prime_len = (int) my_dh_group->prime_len;
-    my_tmp->order_len = (int) my_dh_group->order_len;
+    my_tmp->order_len = my_dh_group->order_len;
+    my_tmp->prime_len = my_dh_group->prime_len;
     my_tmp->order = crypto_bignum_init_set(my_dh_group->order, my_dh_group->order_len);
     my_tmp->prime = crypto_bignum_init_set(my_dh_group->prime, my_dh_group->prime_len);
     my_tmp->dh = my_dh_group;
 
+    // 5. Define SAE data, with tmp
     struct sae_data *my_sae = calloc(1, sizeof(struct sae_data));
     my_sae->tmp = my_tmp;
+
+    // 6. For each password from the dictionary:
+    //    Generate a fingerprint, consisting of the iterations amount of sae_derive_pwe_ffc (stored in "counter")
+    //    for each MAC address
 
     if (pas_fd == NULL) {
         fprintf(stderr, "Unable to open password file!\n");
@@ -98,37 +106,26 @@ int main(int argc, char *argv[]) {
     }
 
     
-    char line[256];
+    char password[256];
+    
 
-    int line_count = 0;
-    for (int c = getc(pas_fd); c != EOF; c = getc(pas_fd)) if (c == '\n') line_count = line_count + 1;
-    fseek(pas_fd, 0, SEEK_SET);
-    printf("Total passwords requested: %d\n", line_count);
-
-    int i = 0;
-    while (fgets(line, sizeof(line), pas_fd)) {
+    while (fgets(password, sizeof(line), pas_fd)) {
         const int address_num = 20;
-        line[strlen(line) - 1] = '\0';
-        fprintf(out_fd, "%s,", line);
+        password[strlen(line) - 1] = '\0';
+        fprintf(out_fd, "%s,", password);
 
         for (int j = 0; j < address_num; j++) {
-            addr2[5] = j;
-            const int iters = sae_derive_pwe_ffc(my_sae, addr1, addr2, (u8 *) line, strlen(line));
-            fprintf(out_fd, " %u", iters);
-            if (j < address_num - 1) fprintf(out_fd, ",");
+
+            /* TODO */
         }
 
         fprintf(out_fd, "\n");
 
-        printf("Finished %d out of %d passwords\r", ++i, line_count);
         fflush(stdout);
     }
 
-    printf("Finished %d out of %d passwords\n", line_count, line_count);
 
     fclose(pas_fd);
     fclose(out_fd);
-
-
-    return 0;
 }
+

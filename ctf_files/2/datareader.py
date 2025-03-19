@@ -11,12 +11,15 @@ def extract_data(path: str) -> pd.DataFrame:
     """
 
     file = open(path)
+    data = file.readlines()
+    file.close()
 
-    ##################
-    # YOUR CODE HERE #
-    ##################
+    # Cut irrelevant lines
+    data = data[6:-1]
 
-    pass
+    data = [str.split(line, " ") for line in data]
+    data = [(int(line[1][:-1], 16), int(line[2][:-1], 10)) for line in data]
+    return pd.DataFrame(data, columns=["STA", "Time"])
 
 
 def qplot(df, addrs=20):
@@ -31,17 +34,19 @@ def qplot(df, addrs=20):
     plt.show()
 
 
-def get_address_quantiles(df: pd.DataFrame, low=0.15, high=0.35) -> pd.DataFrame:
-    """
-    Creates a pandas DataFrame containing, for each spoofed address:
-    the address byte, the (low)-quantile, and (high)-quantile.
-    """
-
-    ##################
-    # YOUR CODE HERE #
-    ##################
-
-    pass
+def get_address_quantiles(df, addrs=20, low=0.3, high=0.5):
+    addr_quantiles = pd.DataFrame(
+        [
+            (
+                j,
+                df["Time"][df["STA"] == j].quantile(low),
+                df["Time"][df["STA"] == j].quantile(high),
+            )
+            for j in range(addrs)
+        ],
+        columns=["STA", "Low Quantile", "High Quantile"],
+    )
+    return addr_quantiles
 
 
 def estimate_iter_time(addr_quantiles) -> int:
