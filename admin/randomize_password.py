@@ -55,7 +55,7 @@ if __name__ == "__main__":
     update_conf(chosen, config_file, device)
 
     # Update password as flag
-    run_query(f"UPDATE flags SET content = '{chosen}' WHERE id = 1")
+    run_query(f"UPDATE flags SET content = '{chosen}' WHERE id = 2")
 
     # Update file in CTFd
     sha1 = calc_sha1(user_ctf_zip)

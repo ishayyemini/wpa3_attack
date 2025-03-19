@@ -58,7 +58,6 @@ target/
 
 .DS_Store
 
-*.db
 *.log
 *.log.*
 .idea/
