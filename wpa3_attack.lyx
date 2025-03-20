@@ -52,7 +52,7 @@
 \use_package stmaryrd 1
 \use_package undertilde 1
 \cite_engine natbib
-\cite_engine_type authoryear
+\cite_engine_type numerical
 \biblio_style plain
 \use_bibtopic false
 \use_indices false
@@ -283,15 +283,15 @@ Let’s consider two parties,
 \end_layout
 
 \begin_layout Standard
-That is the reason that we have the WPA’s - Wi-Fi Protected Access certificates [
+That is the reason that we have the WPA’s - Wi-Fi Protected Access certificates 
 \begin_inset CommandInset citation
-LatexCommand keyonly
+LatexCommand citep
 key "1"
 literal "false"
 
 \end_inset
 
-].
+.
  These certificates,
  which are given to devices that are up to standard,
  are meant to ensure that the transfer of the information using the Wi-Fi protocols is done in a safe enough manner.
@@ -313,15 +313,15 @@ The WPA3 certificate,
 \begin_layout Standard
 Since the security of WPA3 is mostly reliant on the Dragonfly handshake,
  we should expect it to be pretty secure(in theory and in practice).
- Some variant of the Dragonfly has been formally proven to be secure [
+ Some variant of the Dragonfly has been formally proven to be secure 
 \begin_inset CommandInset citation
-LatexCommand keyonly
+LatexCommand citep
 key "2"
 literal "false"
 
 \end_inset
 
-],
+,
  so we shall see to the practicing side of things.
 \end_layout
 
@@ -352,15 +352,15 @@ Related Work
 During the process of our project,
  we used several open resources.
  The basis for the attack itself comes from “Dragonblood:
- Analyzing the Dragonfly Handshake of WPA3 and EAP-pwd“ [
+ Analyzing the Dragonfly Handshake of WPA3 and EAP-pwd“ 
 \begin_inset CommandInset citation
-LatexCommand keyonly
+LatexCommand citep
 key "3"
 literal "false"
 
 \end_inset
 
-],
+,
  which is the primary paper.
  The paper describes the attack and the code for both simulating a WP3 network,
  and making repeated fraudulent logins to measure response time.
@@ -373,15 +373,15 @@ literal "false"
 \begin_layout Standard
 Additionally,
  during the implementation of our attack,
- we used “Opportunities and Limits of Remote Timing Attacks“ [
+ we used “Opportunities and Limits of Remote Timing Attacks“ 
 \begin_inset CommandInset citation
-LatexCommand keyonly
+LatexCommand citep
 key "4"
 literal "false"
 
 \end_inset
 
-],
+,
  a paper that describes a statistical “Box Test”.
  Using that test,
  we are able to distinguish between different distributions based on the timing samples collected by running the code published by the first article’s writers.
@@ -473,15 +473,15 @@ The chance of the number being smaller than
 .
  However,
  for some of the primes,
- particularly group 24 [
+ particularly group 24 
 \begin_inset CommandInset citation
-LatexCommand keyonly
+LatexCommand citep
 key "5"
 literal "false"
 
 \end_inset
 
-],
+,
  
 \begin_inset Formula $\frac{\text{P}}{2^{n}}\approx0.47\sim\frac{1}{2}$
 \end_inset
@@ -571,19 +571,7 @@ F_{X}^{-1}(high)\in\left[F_{Y}^{-1}(low),F_{Y}^{-1}(high)\right]
 \begin_layout Standard
 We have attempted several methods of implementing this test.
  The difference between the methods is in the algorithm that decides which addresses give an equal iteration count.
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
+\begin_inset Newpage pagebreak
 \end_inset
 
 
@@ -708,15 +696,15 @@ Design
 Our CTF challenge consists of filling in missing functions according to text instructions.
  To implement the attack,
  we modified the code for simulating WPA3 networks to make it vulnerable,
- and the original attack code used in the Dragonblood paper [
+ and the original attack code used in the Dragonblood paper 
 \begin_inset CommandInset citation
-LatexCommand keyonly
+LatexCommand citep
 key "3"
 literal "false"
 
 \end_inset
 
-].
+.
 \end_layout
 
 \begin_layout Standard
@@ -732,6 +720,11 @@ dragontime.c - program for performing fraudulent logins and recording response t
 \end_layout
 
 \begin_layout Itemize
+sae.c - extracted from hostapd sources,
+ we modified the sae_derive_ffc function so it returns the iterations counter.
+\end_layout
+
+\begin_layout Itemize
 datareader.py - program for analyzing timing measurements.
 \end_layout
 
@@ -740,7 +733,7 @@ find_matches.py - program for finding the closest matches of a passwords fingerp
 \end_layout
 
 \begin_layout Standard
-We have multiple levels for the CTF:
+We have three levels for the CTF:
  
 \end_layout
 
@@ -797,6 +790,16 @@ CTF Instructions
 \begin_layout Standard
 First,
  make sure that both computers are running linux(we ran the CTF on kali).
+\begin_inset Newline newline
+\end_inset
+
+You can mock everything on a single computer by running:
+\end_layout
+
+\begin_layout Standard
+
+\family typewriter
+$ sh setup_mocked.sh
 \end_layout
 
 \begin_layout Subsection*
@@ -811,7 +814,11 @@ Setup:
 \end_layout
 
 \begin_layout Standard
-sh setup_admin.sh
+
+\family typewriter
+$ sh setup_admin.sh
+\family default
+
 \begin_inset Newline newline
 \end_inset
 
@@ -825,7 +832,11 @@ To start the CTFd,
 \end_layout
 
 \begin_layout Standard
-sh run_ctfd.sh 1 wlan0
+
+\family typewriter
+$ sh run_ctfd.sh 1 wlan0
+\family default
+
 \begin_inset Newline newline
 \end_inset
 
@@ -841,20 +852,12 @@ After running run_ctfd.sh,
 \end_layout
 
 \begin_layout Standard
-sh run_hostapd.sh
-\begin_inset Newline newline
-\end_inset
 
+\family typewriter
+$ sh run_hostapd.sh 
+\family default
 
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Newline newline
+\begin_inset Newpage pagebreak
 \end_inset
 
 
@@ -865,9 +868,37 @@ Players
 \end_layout
 
 \begin_layout Standard
-For the users,
- tell them to enter the website that runs the CTFd (http://[your IP address]:4000).
- There are three user guides,
+For the players,
+ tell them to enter the website that runs the CTFd (it's http://[your IP address]:4000,
+ unless you specified a different port).
+ There,
+ they need to register,
+ and they'll see two challenges:
+\end_layout
+
+\begin_layout Standard
+The first challenge requires them to donwload a zipped directory,
+ unzip it,
+ and enter the flag that's stored there.
+ The directory is created and uploaded automatically when running 
+\family typewriter
+run_ctfd.sh
+\family default
+.
+ It contains everything that the players need in order to hack the WPA3 network.
+ 
+\end_layout
+
+\begin_layout Standard
+The second challenge is the main challenge - here,
+ the players will need to actually modify the code,
+ complete it,
+ compile it and finally run the tools in order to infer the password.
+ 
+\end_layout
+
+\begin_layout Standard
+There are three user guides,
  relevant to each level.
  
 \end_layout
@@ -955,6 +986,10 @@ How do we create a timer?
 
 \begin_layout Itemize
 Recall how to commit new commit and inject it(look for useful functions)
+\begin_inset Newpage pagebreak
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
