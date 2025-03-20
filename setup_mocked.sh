@@ -1,3 +1,5 @@
+#!/bin/sh
+
 # Setup mocked wlan devices
 sudo modprobe -r mac80211_hwsim
 sudo modprobe mac80211_hwsim radios=2
